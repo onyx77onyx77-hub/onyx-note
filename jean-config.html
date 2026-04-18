@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Configuration | ox-note-shared.ch</title>
+    <title>Configuration | ONYX</title>
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
     
     <script src="https://www.paypal.com/sdk/js?client-id=test&currency=CHF&buyer-country=CH&components=buttons&disable-funding=credit,card"></script>
@@ -28,37 +28,36 @@
         h1 { font-size: 1.6rem; font-weight: 800; margin-bottom: 5px; }
         .domain-tag { font-size: 0.7rem; font-weight: 700; color: var(--accent); letter-spacing: 1px; margin-bottom: 25px; display: block; text-transform: uppercase; }
         
-        .step { text-align: left; margin-bottom: 25px; }
-        label { display: block; font-weight: 800; font-size: 0.7rem; text-transform: uppercase; margin-bottom: 12px; color: #999; }
+        .step { text-align: left; margin-bottom: 20px; }
+        label { display: block; font-weight: 800; font-size: 0.65rem; text-transform: uppercase; margin-bottom: 8px; color: #999; letter-spacing: 0.5px; }
         
-        textarea { 
-            width: 100%; border: 2px solid #f0f0f0; border-radius: 25px; padding: 18px; 
+        input[type="text"], textarea { 
+            width: 100%; border: 2px solid #f0f0f0; border-radius: 20px; padding: 15px; 
             font-family: inherit; font-size: 0.95rem; outline: none; box-sizing: border-box; 
-            height: 110px; resize: none; background: #fafafa; transition: 0.3s;
+            background: #fafafa; transition: 0.3s; margin-bottom: 10px;
         }
-        textarea:focus { border-color: var(--accent); background: #fff; }
+        textarea { height: 100px; resize: none; border-radius: 25px; }
+        input:focus, textarea:focus { border-color: var(--accent); background: #fff; }
 
-        .template-container { display: flex; gap: 8px; margin-top: 12px; flex-wrap: wrap; }
+        .template-container { display: flex; gap: 8px; margin-top: 5px; flex-wrap: wrap; margin-bottom: 10px; }
         .template-btn { 
-            background: white; border: 1px solid #eee; padding: 8px 14px; 
-            border-radius: 15px; font-size: 0.7rem; font-weight: 800; cursor: pointer; 
+            background: white; border: 1px solid #eee; padding: 6px 12px; 
+            border-radius: 12px; font-size: 0.65rem; font-weight: 800; cursor: pointer; 
             transition: all 0.2s;
         }
         .template-btn.active { background: var(--accent); color: white; border-color: var(--accent); }
 
-        /* BOUTON INITIAL */
         .btn-activate { 
             background: #333; color: white; padding: 20px; border-radius: 50px; border: none; 
             font-weight: 800; font-size: 1.1rem; width: 100%; cursor: pointer; margin-top: 10px; 
         }
 
-        /* ZONE PAIEMENT DYNAMIQUE */
         #paypal-button-container { margin-top: 20px; display: none; min-height: 150px; }
-
         #dashboard-ui { display: none; animation: fadeIn 0.6s ease; }
+        
         .link-box { 
-            background: #fdf6e3; padding: 18px; border-radius: 20px; font-size: 0.9rem; 
-            margin: 25px 0; border: 1px dashed var(--accent); font-weight: 700; word-break: break-all; 
+            background: #fdf6e3; padding: 18px; border-radius: 20px; font-size: 0.85rem; 
+            margin: 25px 0; border: 1px dashed var(--accent); font-weight: 700; word-break: break-all; color: #b08d1a;
         }
 
         @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
@@ -69,11 +68,18 @@
     <div class="onyx-card">
         <div id="setup-ui">
             <h1>Créer votre Note</h1>
-            <span class="domain-tag">ox-note-shared.ch</span>
+            <span class="domain-tag">onyx | l'exception</span>
             
             <div class="step">
-                <label>Votre invitation pour Ana</label>
+                <label>Votre Prénom</label>
+                <input type="text" id="sender-name" placeholder="Ex: Marc">
+
+                <label>Son Prénom</label>
+                <input type="text" id="receiver-name" placeholder="Ex: Julie">
+
+                <label>Votre Message Secret</label>
                 <textarea id="message-area" placeholder="Écrivez votre message..."></textarea>
+                
                 <div class="template-container">
                     <button class="template-btn" onclick="setTemplate(1, this)">✨ Équilibré</button>
                     <button class="template-btn" onclick="setTemplate(2, this)">⚡ Moderne</button>
@@ -87,28 +93,29 @@
             
             <p style="font-size: 0.65rem; color: #aaa; margin-top: 15px; line-height: 1.4; font-weight: 600;">
                 🔒 <b>Paiement Sécurisé :</b> Apple Pay, Google Pay ou PayPal. <br>
-                Service éphémère de 48h. Discrétion garantie.
+                Service éphémère. Discrétion garantie.
             </p>
         </div>
 
         <div id="dashboard-ui">
             <span style="font-size: 3rem; display: block; margin-bottom: 10px;">☁️</span>
             <h1>C'est prêt !</h1>
-            <p style="font-size: 0.85rem; color: #666;">Copiez ce lien et envoyez-le à Ana.</p>
+            <p style="font-size: 0.85rem; color: #666;">Copiez ce lien et envoyez-le à votre destinataire.</p>
 
-            <div class="link-box" id="final-link">ox-note-shared.ch/ana-view.html</div>
+            <div class="link-box" id="final-link">Génération du lien...</div>
 
-            <button onclick="copyLink()" style="background: var(--accent); color: white; border: none; padding: 12px 25px; border-radius: 15px; font-weight: 800; cursor: pointer; margin-bottom: 20px;">Copier le lien</button>
+            <button onclick="copyLink()" style="background: var(--accent); color: white; border: none; padding: 12px 25px; border-radius: 15px; font-weight: 800; cursor: pointer; margin-bottom: 20px; width: 100%;">Copier le lien</button>
             
             <div style="border-top: 1px solid #eee; padding-top: 20px;">
-                <button onclick="window.location.href='ana-view.html'" style="background: #333; color: white; border: none; padding: 15px 30px; border-radius: 50px; font-weight: 800; cursor: pointer; width: 100%;">Voir le rendu d'Ana</button>
+                <p id="preview-text" style="font-size: 0.7rem; margin-bottom: 10px; font-weight: 700; color: #aaa;"></p>
+                <button id="btn-preview" style="background: #333; color: white; border: none; padding: 15px 30px; border-radius: 50px; font-weight: 800; cursor: pointer; width: 100%;">Voir le rendu</button>
             </div>
         </div>
     </div>
 
     <script>
         const templates = { 
-            1: "J'ai trouvé ton profil très inspirant. Je nous ai ouvert ce nuage privé pour 48h...", 
+            1: "J'ai trouvé ton profil très inspirant. Je nous ai ouvert ce nuage privé...", 
             2: "Sortons du bruit de l'application. J'ai débloqué cet espace privilégié pour nous...", 
             3: "Les belles rencontres méritent un écrin particulier. Bienvenue dans mon nuage." 
         };
@@ -120,22 +127,20 @@
         }
 
         function showPaypalZone() {
-            if(document.getElementById('message-area').value.length < 5) {
-                alert("Veuillez écrire un message d'abord.");
+            const sender = document.getElementById('sender-name').value;
+            const receiver = document.getElementById('receiver-name').value;
+            const msg = document.getElementById('message-area').value;
+
+            if(!sender || !receiver || msg.length < 5) {
+                alert("Veuillez remplir les prénoms et le message.");
                 return;
             }
             document.getElementById('show-paypal').style.display = 'none';
             document.getElementById('paypal-button-container').style.display = 'block';
         }
 
-        // INITIALISATION DES BOUTONS SMART PAYPAL (INCLUT GOOGLE/APPLE PAY)
         paypal.Buttons({
-            style: {
-                layout: 'vertical',
-                color:  'gold',
-                shape:  'pill',
-                label:  'pay'
-            },
+            style: { layout: 'vertical', color: 'gold', shape: 'pill', label: 'pay' },
             createOrder: function(data, actions) {
                 return actions.order.create({
                     purchase_units: [{ amount: { value: '2.00', currency_code: 'CHF' } }]
@@ -143,8 +148,22 @@
             },
             onApprove: function(data, actions) {
                 return actions.order.capture().then(function(details) {
+                    const s = encodeURIComponent(document.getElementById('sender-name').value);
+                    const r = encodeURIComponent(document.getElementById('receiver-name').value);
+                    const m = encodeURIComponent(document.getElementById('message-area').value);
+                    
+                    // Création du lien personnalisé
+                    const baseUrl = window.location.href.replace('jean-config.html', 'ana-view.html');
+                    const generatedUrl = `${baseUrl}?from=${s}&to=${r}&msg=${m}`;
+
                     document.getElementById('setup-ui').style.display = 'none';
                     document.getElementById('dashboard-ui').style.display = 'block';
+                    document.getElementById('final-link').innerText = generatedUrl;
+                    document.getElementById('preview-text').innerText = "Aperçu pour " + document.getElementById('receiver-name').value;
+                    
+                    document.getElementById('btn-preview').onclick = function() {
+                        window.location.href = generatedUrl;
+                    };
                 });
             }
         }).render('#paypal-button-container');
