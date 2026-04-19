@@ -4,155 +4,65 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ONYX | L'Exception</title>
-    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;700;800&display=swap" rel="stylesheet">
     <style>
-        :root { --accent: #d4af37; --text-main: #5d4037; }
+        :root { --accent: #d4af37; --text-main: #5d4037; --white: #ffffff; }
         
         body { 
-            margin: 0; padding: 0; font-family: 'Nunito', sans-serif; 
             background: linear-gradient(135deg, #fdfbfb 0%, #ebedee 50%, #fce4ec 100%); 
-            min-height: 100vh; display: flex; align-items: center; justify-content: center; 
-            overflow: hidden; 
+            margin: 0; min-height: 100vh; font-family: 'Nunito', sans-serif; 
+            display: flex; justify-content: center; align-items: center; 
+            color: var(--text-main); overflow: hidden;
         }
 
-        /* --- CADRAN NUAGE STABLE --- */
-        .cloud-container { 
-            position: relative; background: rgba(255, 255, 255, 0.96); 
-            padding: 50px 60px; z-index: 50; text-align: center; 
-            max-width: 580px; border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%; 
-            box-shadow: 0 30px 60px rgba(0,0,0,0.05), inset 0 0 40px rgba(255,255,255,1); 
-            border: 5px solid white; 
-        }
-        .cloud-container::before, .cloud-container::after { 
-            content: ''; position: absolute; background: rgba(255, 255, 255, 0.96); 
-            border-radius: 50%; z-index: -1; 
-        }
-        .cloud-container::before { width: 220px; height: 220px; top: -70px; left: 30px; }
-        .cloud-container::after { width: 260px; height: 260px; bottom: -60px; right: 10px; }
-
-        /* --- TITRE GUIMAUVE --- */
-        h1.onyx-title { 
-            font-size: 4.5rem; font-weight: 800; margin: 0; 
-            background: linear-gradient(45deg, #ff9a9e, #fad0c4, #a1c4fd); 
-            -webkit-background-clip: text; background-clip: text; color: transparent; 
-            filter: drop-shadow(0 4px 5px rgba(212, 175, 55, 0.3)); letter-spacing: -2px; 
+        .onyx-card { 
+            background: rgba(255, 255, 255, 0.98); width: 90%; max-width: 440px; 
+            border-radius: 60px; padding: 60px 40px; text-align: center; 
+            box-shadow: 0 30px 60px rgba(0,0,0,0.08); border: 4px solid var(--white); 
+            animation: fadeIn 1s ease-out; position: relative;
         }
 
-        .onyx-desc { font-size: 1.05rem; font-weight: 600; line-height: 1.6; margin: 25px 0; color: var(--text-main); text-align: center; }
-        .highlight { font-weight: 800; color: var(--accent); display: block; margin-top: 15px; font-size: 1.2rem; }
+        .logo-cloud { font-size: 4rem; margin-bottom: 20px; display: block; animation: float 3s infinite ease-in-out; }
+        
+        h1 { font-size: 2rem; font-weight: 800; margin-bottom: 10px; letter-spacing: 2px; color: #000; }
+        .domain-tag { font-size: 0.8rem; font-weight: 700; color: var(--accent); letter-spacing: 3px; margin-bottom: 40px; display: block; text-transform: uppercase; }
+        
+        p { font-size: 1rem; line-height: 1.6; color: #777; margin-bottom: 40px; font-weight: 400; }
+        .highlight { color: var(--text-main); font-weight: 700; }
 
-        /* --- BOUTON BARBE À PAPA --- */
-        .btn-cotton-candy { 
-            background: linear-gradient(135deg, #ffafbd 0%, #ffc3a0 100%); 
-            color: white; padding: 22px 45px; border-radius: 50px; 
-            text-decoration: none; font-weight: 800; font-size: 1.3rem; 
-            display: inline-block; position: relative; 
-            box-shadow: 0 15px 30px rgba(255, 175, 189, 0.5); border: 4px solid #fff; 
-            transition: all 0.3s; cursor: pointer; margin-top: 10px; 
+        .btn-start { 
+            background: #000; color: white; padding: 22px 40px; border-radius: 50px; border: none; 
+            font-weight: 800; font-size: 1rem; width: 100%; cursor: pointer; 
+            transition: transform 0.3s, box-shadow 0.3s; text-decoration: none; display: inline-block;
+            box-sizing: border-box;
         }
-        .btn-cotton-candy:hover { transform: scale(1.08); box-shadow: 0 20px 40px rgba(255, 175, 189, 0.7); }
+        .btn-start:hover { transform: translateY(-3px); box-shadow: 0 10px 20px rgba(0,0,0,0.1); }
 
-        /* --- BULLES XL --- */
-        .soap-bubble { 
-            position: fixed; border-radius: 50%; background: rgba(255, 255, 255, 0.25); 
-            box-shadow: inset 0 0 20px rgba(255, 255, 255, 0.6); 
-            display: flex; align-items: center; justify-content: center; 
-            font-size: 0.95rem; font-weight: 800; color: #666; 
-            backdrop-filter: blur(2px); border: 1px solid rgba(255,255,255,0.4); 
-            cursor: pointer; z-index: 10; 
-        }
+        .footer-note { margin-top: 30px; font-size: 0.7rem; color: #bbb; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; }
 
-        .particle { position: fixed; pointer-events: none; z-index: 200; font-size: 2.5rem; transform: translate(-50%, -50%); }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-15px); } }
     </style>
 </head>
 <body>
 
-    <div class="cloud-container">
-        <h1 class="onyx-title">Onyx</h1>
-        <div class="onyx-desc">
-            Le hasard crée la rencontre, Onyx crée l’exception. <br>
-            Dans le tumulte du monde, nous avons dessiné un nuage de silence pour ceux qui savent encore s'attendre. <br>
-            Un univers suspendu où la rareté n'est pas un luxe, mais une promesse.
-            <span class="highlight">Et si votre plus belle histoire commençait hors du temps ?</span>
+    <div class="onyx-card">
+        <span class="logo-cloud">☁️</span>
+        <h1>ONYX</h1>
+        <span class="domain-tag">L'Exception</span>
+        
+        <p>
+            Offrez un espace éphémère et privilégié. <br>
+            Créez une <span class="highlight">Note de Nuage</span> privée, <br>
+            élégante et protégée.
+        </p>
+
+        <a href="jean-config.html" class="btn-start">Créer une Note</a>
+
+        <div class="footer-note">
+            Genève • Lausanne • Zürich
         </div>
-        <a href="jean-config.html" class="btn-cotton-candy" onclick="partyBurst(event)">Ouvrir mon Nuage</a>
     </div>
 
-    <script>
-        const iconsBurst = ['💖', '✨', '⚡', '🌸', '🕊️', '💗', '❀', '🎉', '🎈'];
-        const bubbleSites = ['tinder', 'badoo', 'meetic', 'lovoo', 'happn'];
-
-        // FONCTION EXPLOSION
-        function createBurst(x, y, count, radiusMax = 400) {
-            for (let i = 0; i < count; i++) {
-                const p = document.createElement('div');
-                p.className = 'particle';
-                p.innerText = iconsBurst[Math.floor(Math.random() * iconsBurst.length)];
-                p.style.left = x + 'px'; p.style.top = y + 'px';
-                document.body.appendChild(p);
-
-                const angle = Math.random() * Math.PI * 2;
-                const dist = 30 + Math.random() * radiusMax;
-                
-                p.animate([
-                    { transform: 'translate(-50%, -50%) scale(0) rotate(0deg)', opacity: 0 },
-                    { transform: 'translate(-50%, -50%) scale(1.2) rotate(0deg)', opacity: 1, offset: 0.1 },
-                    { transform: `translate(${(Math.cos(angle)*dist)}px, ${(Math.sin(angle)*dist)}px) scale(0) rotate(${Math.random()*360}deg)`, opacity: 0 }
-                ], { duration: 2000 + Math.random() * 1000, easing: 'cubic-bezier(0.1, 0.8, 0.3, 1)' }).onfinish = () => p.remove();
-            }
-        }
-
-        // EXPLOSION TRIPLE AU DÉMARRAGE
-        function massiveInit() {
-            const w = window.innerWidth;
-            const h = window.innerHeight;
-            createBurst(w/2, h/2, 150, 500); // Centre
-            setTimeout(() => createBurst(w*0.2, h*0.8, 80, 300), 300); // Gauche
-            setTimeout(() => createBurst(w*0.8, h*0.8, 80, 300), 500); // Droite
-        }
-
-        // CLIC BOUTON
-        function partyBurst(e) {
-            e.preventDefault();
-            const rect = e.target.getBoundingClientRect();
-            createBurst(rect.left + rect.width/2, rect.top + rect.height/2, 60, 350);
-            setTimeout(() => { window.location.href = "jean-config.html"; }, 800);
-        }
-
-        // BULLES XL EXPLOSIVES
-        function createSoapBubble() {
-            const b = document.createElement('div');
-            const couloirs = [15, 32, 50, 68, 85];
-            const size = 120 + Math.random() * 60; // Taille XL
-            const x = couloirs[Math.floor(Math.random() * couloirs.length)];
-            
-            b.className = 'soap-bubble';
-            b.style.width = size + 'px'; b.style.height = size + 'px';
-            b.style.left = x + '%'; b.style.bottom = '-200px';
-            b.innerText = bubbleSites[Math.floor(Math.random() * bubbleSites.length)];
-            document.body.appendChild(b);
-
-            const anim = b.animate([
-                { transform: 'translateY(0)', opacity: 0 },
-                { opacity: 1, offset: 0.1 },
-                { transform: `translateY(-110vh)`, opacity: 1 }
-            ], { duration: 15000 + Math.random() * 5000, easing: 'linear' });
-
-            const pop = () => {
-                const r = b.getBoundingClientRect();
-                createBurst(r.left + size/2, r.top + size/2, 20, size);
-                b.remove();
-            };
-            
-            b.onclick = pop;
-            // Éclate toute seule aléatoirement
-            setTimeout(() => { if(b.parentNode) pop(); }, 7000 + Math.random() * 6000);
-        }
-
-        window.onload = () => {
-            massiveInit();
-            setInterval(createSoapBubble, 2500);
-        };
-    </script>
 </body>
 </html>
