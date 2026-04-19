@@ -3,81 +3,93 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Note Privée | ox-note-shared.ch</title>
-    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <title>ONYX | L'Exception</title>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;800&display=swap" rel="stylesheet">
     <style>
-        :root { --accent: #d4af37; --text-main: #5d4037; }
-        body { background: linear-gradient(135deg, #fdfbfb 0%, #ebedee 50%, #fce4ec 100%); margin: 0; min-height: 100vh; font-family: 'Nunito', sans-serif; display: flex; justify-content: center; align-items: center; overflow: hidden; }
-        .ana-card { background: white; width: 85%; max-width: 400px; border-radius: 60px; padding: 40px 30px; text-align: center; box-shadow: 0 30px 60px rgba(0,0,0,0.05); position: relative; z-index: 10; border: 4px solid white; }
-        .photo-circle { width: 90px; height: 90px; background: #f0f0f0; border-radius: 50%; margin: 0 auto 20px; border: 3px solid var(--accent); }
-        h2 { font-weight: 800; color: var(--text-main); font-size: 1.3rem; margin-bottom: 10px; }
-        p.message-text { line-height: 1.5; color: #666; font-size: 0.95rem; font-style: italic; margin-bottom: 25px; }
-        #reply-zone { display: none; animation: fadeIn 0.5s ease; }
-        textarea { width: 100%; border: 2px solid #f0f0f0; border-radius: 20px; padding: 15px; font-family: inherit; outline: none; box-sizing: border-box; background: #fafafa; height: 100px; resize: none; margin-bottom: 15px; }
-        .btn-onyx { background: var(--text-main); color: white; border: none; padding: 18px; border-radius: 50px; font-weight: 800; width: 100%; cursor: pointer; }
-        .btn-send { background: var(--accent); color: white; border: none; padding: 15px; border-radius: 50px; font-weight: 800; width: 100%; cursor: pointer; }
-        
-        /* BOUQUET & PAPILLONS */
-        .bouquet-wrap { position: relative; display: inline-block; margin-bottom: 15px; font-size: 3.5rem; }
-        .butterfly { position: absolute; font-size: 1rem; animation: fly 6s infinite linear; }
-        @keyframes fly { 0% { transform: translate(0,0) rotate(0); } 50% { transform: translate(15px, -20px) rotate(20deg); } 100% { transform: translate(0,0) rotate(0); } }
-        .particle { position: fixed; pointer-events: none; z-index: 200; font-size: 2rem; transform: translate(-50%, -50%); }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; } }
+        body { 
+            margin: 0; height: 100vh; 
+            background: radial-gradient(circle at center, #2c2c2c 0%, #000 100%); 
+            color: white; font-family: 'Nunito', sans-serif; 
+            display: flex; align-items: center; justify-content: center; 
+            overflow: hidden; 
+        }
+
+        /* Animation des bulles de savon */
+        .bubble { 
+            position: absolute; bottom: -120px; 
+            background: rgba(255, 255, 255, 0.1); 
+            border-radius: 50%; 
+            box-shadow: 0 0 20px rgba(255,255,255,0.2) inset; 
+            animation: rise 10s infinite ease-in; 
+            z-index: 1; 
+        }
+        @keyframes rise {
+            0% { transform: translateY(0) scale(1); opacity: 0; }
+            20% { opacity: 0.6; }
+            100% { transform: translateY(-130vh) scale(1.6); opacity: 0; }
+        }
+
+        .content { 
+            text-align: center; z-index: 10; padding: 30px; 
+            max-width: 600px; animation: fadeIn 2.5s ease-out; 
+        }
+
+        h1 { 
+            font-size: 0.8rem; font-weight: 800; letter-spacing: 5px; 
+            color: #d4af37; text-transform: uppercase; margin-bottom: 40px; 
+        }
+
+        .message-box { 
+            font-size: 1.8rem; line-height: 1.5; font-weight: 600; 
+            text-shadow: 0 0 20px rgba(255,255,255,0.4); 
+        }
+
+        .from-tag { 
+            margin-top: 50px; font-size: 0.9rem; font-weight: 700; 
+            opacity: 0.5; letter-spacing: 1px; 
+        }
+
+        @keyframes fadeIn { 
+            from { opacity: 0; filter: blur(15px); } 
+            to { opacity: 1; filter: blur(0); } 
+        }
     </style>
 </head>
 <body>
-    <div class="ana-card" id="main-card">
-        <div class="photo-circle"></div>
-        <div id="read-mode">
-            <h2>Jean vous a écrit...</h2>
-            <p class="message-text">"Le hasard crée la rencontre, Onyx crée l’exception. J'aimerais beaucoup faire votre connaissance dans ce petit nuage."</p>
-            <button class="btn-onyx" onclick="showReply()">Répondre à Jean</button>
-        </div>
 
-        <div id="reply-zone">
-            <div class="bouquet-wrap">
-                💐 <span class="butterfly" style="top:-10px; left:-15px;">🦋</span>
-                <span class="butterfly" style="top:5px; right:-15px; animation-delay: -2s;">🌸</span>
-            </div>
-            
-            <div style="background: #fff8e1; border-radius: 15px; padding: 12px; margin-bottom: 15px; border: 1px solid #ffe082; text-align: left;">
-                <p style="font-size: 0.75rem; color: #856404; margin: 0; font-weight: 800;">⏳ Capsule éphémère</p>
-                <p style="font-size: 0.7rem; color: #856404; margin: 3px 0 0 0; line-height: 1.3;">
-                    Ce nuage disparaîtra dans 48h. C'est votre unique chance de répondre ou de laisser votre contact.
-                </p>
-            </div>
+    <script>
+        // Création des 18 bulles de savon aléatoires
+        for (let i = 0; i < 18; i++) {
+            let b = document.createElement('div');
+            b.className = 'bubble';
+            let s = Math.random() * 70 + 20 + "px";
+            b.style.width = s; b.style.height = s;
+            b.style.left = Math.random() * 100 + "vw";
+            b.style.animationDuration = Math.random() * 4 + 6 + "s";
+            b.style.animationDelay = Math.random() * 7 + "s";
+            document.body.appendChild(b);
+        }
+    </script>
 
-            <textarea id="ana-msg" placeholder="Votre message pour Jean..."></textarea>
-            <button class="btn-send" onclick="sendToJean()">Déposer dans le nuage</button>
-        </div>
+    <div class="content">
+        <h1 id="to-display">POUR VOUS</h1>
+        <div class="message-box" id="msg-display">Chargement de votre nuage...</div>
+        <div class="from-tag" id="from-display">ONYX | L'EXCEPTION</div>
     </div>
 
     <script>
-        const icons = ['💖', '✨', '🌸', '🕊️', '💗'];
-        function launchExplosion(x, y, count) {
-            for (let i = 0; i < count; i++) {
-                setTimeout(() => {
-                    const p = document.createElement('div'); p.className = 'particle'; p.innerText = icons[Math.floor(Math.random() * icons.length)];
-                    p.style.left = x + 'px'; p.style.top = y + 'px'; document.body.appendChild(p);
-                    const angle = Math.random() * Math.PI * 2; const dist = 100 + Math.random() * 400;
-                    p.animate([{ transform: 'translate(-50%, -50%) scale(0)', opacity: 1 }, { transform: `translate(${(Math.cos(angle)*dist)}px, ${(Math.sin(angle)*dist)}px) scale(1)`, opacity: 0 }], 
-                    { duration: 2500, easing: 'ease-out' }).onfinish = () => p.remove();
-                }, i * 20);
-            }
-        }
-        function showReply() { 
-            const r = document.getElementById('main-card').getBoundingClientRect();
-            launchExplosion(r.left + r.width/2, r.top + r.height/2, 30);
-            document.getElementById('read-mode').style.display = 'none'; 
-            document.getElementById('reply-zone').style.display = 'block'; 
-        }
-        function sendToJean() {
-            if(document.getElementById('ana-msg').value.length < 2) return alert("Écrivez un petit mot...");
-            document.getElementById('reply-zone').innerHTML = "<h2>Message envoyé</h2><p>Il est maintenant dans le nuage de Jean.</p>";
-            const r = document.getElementById('main-card').getBoundingClientRect();
-            launchExplosion(r.left + r.width/2, r.top + r.height/2, 60);
-        }
-        window.onload = () => { setTimeout(() => { launchExplosion(window.innerWidth/2, window.innerHeight/2, 100); }, 600); };
+        // LE CERVEAU : Il lit les infos dans l'adresse du lien
+        const urlParams = new URLSearchParams(window.location.search);
+        const de = urlParams.get('from') || "Un admirateur";
+        const pour = urlParams.get('to') || "Vous";
+        const message = urlParams.get('msg') || "Ceci est un message d'exception.";
+
+        // On affiche les données sur la page
+        document.getElementById('to-display').innerText = `POUR ${pour.toUpperCase()}`;
+        document.getElementById('msg-display').innerText = message;
+        document.getElementById('from-display').innerText = `DE LA PART DE ${de.toUpperCase()}`;
+        document.title = `Pour ${pour} | ONYX`;
     </script>
+
 </body>
 </html>
