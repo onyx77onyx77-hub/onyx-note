@@ -4,143 +4,63 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Configuration | ONYX</title>
-    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
-    
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;800&display=swap" rel="stylesheet">
     <script src="https://www.paypal.com/sdk/js?client-id=test&currency=CHF&components=buttons,applepay,googlepay&disable-funding=credit,card"></script>
-
     <style>
-        :root { --accent: #d4af37; --text-main: #5d4037; --white: #ffffff; }
-        
-        body { 
-            background: linear-gradient(135deg, #fdfbfb 0%, #ebedee 50%, #fce4ec 100%); 
-            margin: 0; min-height: 100vh; font-family: 'Nunito', sans-serif; 
-            display: flex; justify-content: center; align-items: center; 
-            color: var(--text-main);
+        body { background: linear-gradient(135deg, #fdfbfb 0%, #ebedee 100%); min-height: 100vh; margin: 0; display: flex; justify-content: center; align-items: center; font-family: 'Nunito', sans-serif; }
+        .cloud-card { 
+            background: white; width: 90%; max-width: 420px; 
+            border-radius: 70px; padding: 45px; text-align: center; 
+            box-shadow: 0 30px 60px rgba(0,0,0,0.05); border: 6px solid #fff;
         }
-
-        .onyx-card { 
-            background: rgba(255, 255, 255, 0.98); width: 90%; max-width: 440px; 
-            border-radius: 60px; padding: 40px; text-align: center; 
-            box-shadow: 0 30px 60px rgba(0,0,0,0.08); border: 4px solid var(--white); 
-            animation: fadeIn 0.8s ease-out;
-        }
-
-        h1 { font-size: 1.6rem; font-weight: 800; margin-bottom: 5px; letter-spacing: -1px; }
-        .domain-tag { font-size: 0.7rem; font-weight: 700; color: var(--accent); letter-spacing: 1px; margin-bottom: 25px; display: block; text-transform: uppercase; }
-        
-        .step { text-align: left; margin-bottom: 20px; }
-        label { display: block; font-weight: 800; font-size: 0.65rem; text-transform: uppercase; margin-bottom: 8px; color: #999; }
-        
         input, textarea { 
-            width: 100%; border: 2px solid #f0f0f0; border-radius: 20px; padding: 15px; 
-            font-family: inherit; font-size: 0.95rem; outline: none; box-sizing: border-box; 
-            background: #fafafa; margin-bottom: 15px; transition: 0.3s;
+            width: 100%; border: 2px solid #f8f8f8; border-radius: 25px; padding: 18px; 
+            margin-bottom: 15px; font-family: inherit; background: #fafafa; outline: none; box-sizing: border-box;
         }
-        textarea { height: 100px; resize: none; border-radius: 25px; }
-        input:focus, textarea:focus { border-color: var(--accent); background: #fff; }
-
-        .btn-activate { 
-            background: #333; color: white; padding: 20px; border-radius: 50px; border: none; 
-            font-weight: 800; font-size: 1.1rem; width: 100%; cursor: pointer; margin-top: 10px; 
-        }
-
-        #paypal-button-container { margin-top: 20px; display: none; min-height: 150px; }
-        #dashboard-ui { display: none; }
-
-        .link-box { 
-            background: #fdf6e3; padding: 18px; border-radius: 20px; font-size: 0.85rem; 
-            margin: 25px 0; border: 1px dashed var(--accent); font-weight: 700; word-break: break-all; color: #b08d1a;
-        }
-
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        .btn-pay { background: #333; color: white; padding: 20px; border-radius: 50px; width: 100%; border: none; font-weight: 800; cursor: pointer; }
+        #dashboard { display: none; }
     </style>
 </head>
 <body>
+    <div class="cloud-card" id="setup">
+        <h1 style="font-weight:800;">Note Privée</h1>
+        <p style="font-size: 0.8rem; color: #d4af37; letter-spacing: 2px; text-transform: uppercase;">Configuration</p>
+        <input type="text" id="from" placeholder="Votre Prénom">
+        <input type="text" id="to" placeholder="Son Prénom">
+        <textarea id="msg" placeholder="Votre message secret..."></textarea>
+        <button class="btn-pay" id="btn-show" onclick="showPay()">Activer (2.00 CHF)</button>
+        <div id="paypal-container" style="display:none; margin-top:20px;"></div>
+    </div>
 
-    <div class="onyx-card">
-        <div id="setup-ui">
-            <h1>Créer votre Note</h1>
-            <span class="domain-tag">ONYX | L'EXCEPTION</span>
-            
-            <div class="step">
-                <label>Votre Prénom</label>
-                <input type="text" id="sender-name" placeholder="Votre nom">
-
-                <label>Son Prénom</label>
-                <input type="text" id="receiver-name" placeholder="Le nom du destinataire">
-
-                <label>Message Secret</label>
-                <textarea id="message-area" placeholder="Écrivez votre message..."></textarea>
-            </div>
-
-            <button class="btn-activate" id="show-paypal" onclick="showPaypalZone()">Activer (2.00 CHF)</button>
-            
-            <div id="paypal-button-container"></div>
-
-            <p style="font-size: 0.6rem; color: #bbb; margin-top: 15px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px;">
-                Apple Pay • Google Pay • PayPal
-            </p>
-        </div>
-
-        <div id="dashboard-ui">
-            <span style="font-size: 3rem; display: block; margin-bottom: 10px;">☁️</span>
-            <h1>C'est prêt !</h1>
-            <p style="font-size: 0.85rem; color: #666;">Envoyez ce lien privé à votre destinataire.</p>
-            <div class="link-box" id="final-link"></div>
-            <button onclick="copyLink()" style="background: var(--accent); color: white; border: none; padding: 15px; border-radius: 15px; font-weight: 800; cursor: pointer; width: 100%;">Copier le lien</button>
-        </div>
+    <div class="cloud-card" id="dashboard">
+        <span style="font-size:3rem;">✨</span>
+        <h2>C'est prêt</h2>
+        <p style="font-size: 0.9rem; color: #777;">Copiez et envoyez ce lien :</p>
+        <div id="link-res" style="background:#f9f9f9; padding:15px; border-radius:20px; font-size:0.7rem; word-break:break-all; margin-bottom:20px;"></div>
+        <button onclick="copy()" style="background:#d4af37; color:white; border:none; padding:15px; border-radius:20px; width:100%; font-weight:800;">Copier le lien</button>
     </div>
 
     <script>
-        function showPaypalZone() {
-            const s = document.getElementById('sender-name').value;
-            const r = document.getElementById('receiver-name').value;
-            const m = document.getElementById('message-area').value;
-
-            if(!s || !r || m.length < 2) {
-                alert("Veuillez remplir les prénoms et le message.");
-                return;
-            }
-            document.getElementById('show-paypal').style.display = 'none';
-            document.getElementById('paypal-button-container').style.display = 'block';
+        function showPay() {
+            if(!document.getElementById('from').value || !document.getElementById('to').value) return alert("Prénoms requis");
+            document.getElementById('btn-show').style.display = 'none';
+            document.getElementById('paypal-container').style.display = 'block';
         }
-
         paypal.Buttons({
-            style: {
-                layout: 'vertical',
-                color:  'gold',
-                shape:  'pill',
-                label:  'pay'
-            },
-            // On désactive explicitement les cartes bancaires ici aussi pour plus de sécurité
-            fundingSource: undefined, 
-            
-            createOrder: function(data, actions) {
-                return actions.order.create({
-                    purchase_units: [{ amount: { value: '2.00', currency_code: 'CHF' } }]
-                });
-            },
+            createOrder: function(data, actions) { return actions.order.create({ purchase_units: [{ amount: { value: '2.00', currency_code: 'CHF' } }] }); },
             onApprove: function(data, actions) {
-                return actions.order.capture().then(function(details) {
-                    const s = encodeURIComponent(document.getElementById('sender-name').value);
-                    const r = encodeURIComponent(document.getElementById('receiver-name').value);
-                    const m = encodeURIComponent(document.getElementById('message-area').value);
-                    
-                    const baseUrl = window.location.href.replace('jean-config.html', 'ana-view.html');
-                    const generatedUrl = `${baseUrl}?from=${s}&to=${r}&msg=${m}`;
-
-                    document.getElementById('setup-ui').style.display = 'none';
-                    document.getElementById('dashboard-ui').style.display = 'block';
-                    document.getElementById('final-link').innerText = generatedUrl;
+                return actions.order.capture().then(function() {
+                    const s = encodeURIComponent(document.getElementById('from').value);
+                    const r = encodeURIComponent(document.getElementById('to').value);
+                    const m = encodeURIComponent(document.getElementById('msg').value);
+                    const url = window.location.href.replace('jean-config.html', 'ana-view.html') + `?from=${s}&to=${r}&msg=${m}`;
+                    document.getElementById('setup').style.display = 'none';
+                    document.getElementById('dashboard').style.display = 'block';
+                    document.getElementById('link-res').innerText = url;
                 });
             }
-        }).render('#paypal-button-container');
-
-        function copyLink() {
-            const link = document.getElementById('final-link').innerText;
-            navigator.clipboard.writeText(link);
-            alert("Lien copié !");
-        }
+        }).render('#paypal-container');
+        function copy() { navigator.clipboard.writeText(document.getElementById('link-res').innerText); alert("Copié !"); }
     </script>
 </body>
 </html>
