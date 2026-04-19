@@ -6,90 +6,46 @@
     <title>ONYX | L'Exception</title>
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;800&display=swap" rel="stylesheet">
     <style>
-        body { 
-            margin: 0; height: 100vh; 
-            background: radial-gradient(circle at center, #2c2c2c 0%, #000 100%); 
-            color: white; font-family: 'Nunito', sans-serif; 
-            display: flex; align-items: center; justify-content: center; 
-            overflow: hidden; 
-        }
-
-        /* Animation des bulles de savon */
+        body { margin: 0; height: 100vh; background: radial-gradient(circle at center, #222, #000); color: white; font-family: 'Nunito', sans-serif; display: flex; align-items: center; justify-content: center; overflow: hidden; }
+        
+        /* Bulles de savon */
         .bubble { 
-            position: absolute; bottom: -120px; 
-            background: rgba(255, 255, 255, 0.1); 
-            border-radius: 50%; 
-            box-shadow: 0 0 20px rgba(255,255,255,0.2) inset; 
-            animation: rise 10s infinite ease-in; 
-            z-index: 1; 
+            position: absolute; bottom: -100px; background: rgba(255,255,255,0.1); 
+            border-radius: 50%; box-shadow: 0 0 15px rgba(255,255,255,0.2) inset; 
+            animation: rise 8s infinite ease-in; z-index: 1; 
         }
-        @keyframes rise {
-            0% { transform: translateY(0) scale(1); opacity: 0; }
-            20% { opacity: 0.6; }
-            100% { transform: translateY(-130vh) scale(1.6); opacity: 0; }
+        @keyframes rise { 
+            0% { transform: translateY(0) scale(1); opacity: 0; } 
+            50% { opacity: 0.5; } 
+            100% { transform: translateY(-120vh) scale(1.5); opacity: 0; } 
         }
 
-        .content { 
-            text-align: center; z-index: 10; padding: 30px; 
-            max-width: 600px; animation: fadeIn 2.5s ease-out; 
-        }
-
-        h1 { 
-            font-size: 0.8rem; font-weight: 800; letter-spacing: 5px; 
-            color: #d4af37; text-transform: uppercase; margin-bottom: 40px; 
-        }
-
-        .message-box { 
-            font-size: 1.8rem; line-height: 1.5; font-weight: 600; 
-            text-shadow: 0 0 20px rgba(255,255,255,0.4); 
-        }
-
-        .from-tag { 
-            margin-top: 50px; font-size: 0.9rem; font-weight: 700; 
-            opacity: 0.5; letter-spacing: 1px; 
-        }
-
-        @keyframes fadeIn { 
-            from { opacity: 0; filter: blur(15px); } 
-            to { opacity: 1; filter: blur(0); } 
-        }
+        .content { text-align: center; z-index: 10; animation: blurIn 2s ease-out; padding: 20px; }
+        @keyframes blurIn { from { filter: blur(20px); opacity: 0; } to { filter: blur(0); opacity: 1; } }
+        
+        h1 { font-size: 0.7rem; letter-spacing: 5px; color: #d4af37; text-transform: uppercase; }
+        .msg { font-size: 1.8rem; font-weight: 600; margin: 40px 0; text-shadow: 0 0 20px rgba(255,255,255,0.5); }
     </style>
 </head>
 <body>
-
     <script>
-        // Création des 18 bulles de savon aléatoires
-        for (let i = 0; i < 18; i++) {
-            let b = document.createElement('div');
-            b.className = 'bubble';
-            let s = Math.random() * 70 + 20 + "px";
-            b.style.width = s; b.style.height = s;
-            b.style.left = Math.random() * 100 + "vw";
-            b.style.animationDuration = Math.random() * 4 + 6 + "s";
-            b.style.animationDelay = Math.random() * 7 + "s";
-            document.body.appendChild(b);
+        for(let i=0; i<15; i++) {
+            let b = document.createElement('div'); b.className = 'bubble';
+            let s = Math.random()*60 + 20 + "px"; b.style.width = s; b.style.height = s;
+            b.style.left = Math.random()*100 + "vw"; b.style.animationDuration = 5 + Math.random()*5 + "s";
+            b.style.animationDelay = Math.random()*5 + "s"; document.body.appendChild(b);
         }
     </script>
-
     <div class="content">
-        <h1 id="to-display">POUR VOUS</h1>
-        <div class="message-box" id="msg-display">Chargement de votre nuage...</div>
-        <div class="from-tag" id="from-display">ONYX | L'EXCEPTION</div>
+        <h1 id="to">POUR VOUS</h1>
+        <div class="msg" id="msg">Chargement...</div>
+        <div style="opacity:0.4; font-size:0.8rem;" id="from">DE LA PART DE...</div>
     </div>
-
     <script>
-        // LE CERVEAU : Il lit les infos dans l'adresse du lien
-        const urlParams = new URLSearchParams(window.location.search);
-        const de = urlParams.get('from') || "Un admirateur";
-        const pour = urlParams.get('to') || "Vous";
-        const message = urlParams.get('msg') || "Ceci est un message d'exception.";
-
-        // On affiche les données sur la page
-        document.getElementById('to-display').innerText = `POUR ${pour.toUpperCase()}`;
-        document.getElementById('msg-display').innerText = message;
-        document.getElementById('from-display').innerText = `DE LA PART DE ${de.toUpperCase()}`;
-        document.title = `Pour ${pour} | ONYX`;
+        const p = new URLSearchParams(window.location.search);
+        document.getElementById('to').innerText = "POUR " + (p.get('to') || "VOUS").toUpperCase();
+        document.getElementById('msg').innerText = p.get('msg') || "...";
+        document.getElementById('from').innerText = "DE LA PART DE " + (p.get('from') || "ONYX").toUpperCase();
     </script>
-
 </body>
 </html>
