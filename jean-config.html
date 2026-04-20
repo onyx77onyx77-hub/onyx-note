@@ -3,64 +3,233 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Configuration | ONYX</title>
-    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;800&display=swap" rel="stylesheet">
-    <script src="https://www.paypal.com/sdk/js?client-id=test&currency=CHF&components=buttons,applepay,googlepay&disable-funding=credit,card"></script>
+    <title>ONYX | Configuration</title>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+    
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+        import { getDatabase, ref, set } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyCqjsoUcj02JYzsB3HwRoe0Tib5EYKl9ow",
+            authDomain: "onyx-125fd.firebaseapp.com",
+            databaseURL: "https://onyx-125fd-default-rtdb.europe-west1.firebasedatabase.app",
+            projectId: "onyx-125fd",
+            storageBucket: "onyx-125fd.firebasestorage.app",
+            messagingSenderId: "908904729319",
+            appId: "1:908904729319:web:372d584a5b1b52f33db042"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getDatabase(app);
+
+        // On rend la fonction accessible au bouton
+        window.saveToFirebase = function(data) {
+            return set(ref(db, 'session/'), data);
+        }
+    </script>
+
     <style>
-        body { background: linear-gradient(135deg, #fdfbfb 0%, #ebedee 100%); min-height: 100vh; margin: 0; display: flex; justify-content: center; align-items: center; font-family: 'Nunito', sans-serif; }
-        .cloud-card { 
-            background: white; width: 90%; max-width: 420px; 
-            border-radius: 70px; padding: 45px; text-align: center; 
-            box-shadow: 0 30px 60px rgba(0,0,0,0.05); border: 6px solid #fff;
+        :root { --accent: #d4af37; --text-main: #5d4037; --lilas: #e1bee7; }
+        body { margin: 0; padding: 0; font-family: 'Nunito', sans-serif; background: linear-gradient(135deg, #fdfbfb 0%, #ebedee 50%, #fce4ec 100%); min-height: 100vh; display: flex; align-items: center; justify-content: center; overflow: hidden; }
+        
+        .config-cloud {
+            position: relative; background: rgba(255, 255, 255, 0.98);
+            padding: 40px 50px; z-index: 100; text-align: center;
+            width: 90%; max-width: 500px; border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+            box-shadow: 0 30px 60px rgba(0,0,0,0.05), inset 0 0 40px rgba(255,255,255,1);
+            border: 5px solid white; animation: cloudFloat 5s infinite ease-in-out;
         }
-        input, textarea { 
-            width: 100%; border: 2px solid #f8f8f8; border-radius: 25px; padding: 18px; 
-            margin-bottom: 15px; font-family: inherit; background: #fafafa; outline: none; box-sizing: border-box;
+        .config-cloud::before, .config-cloud::after { content: ''; position: absolute; background: rgba(255, 255, 255, 0.98); border-radius: 50%; z-index: -1; }
+        .config-cloud::before { width: 200px; height: 200px; top: -70px; left: 30px; }
+        .config-cloud::after { width: 240px; height: 240px; bottom: -60px; right: 10px; }
+
+        @keyframes cloudFloat { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-15px); } }
+
+        h1 { font-size: 2rem; font-weight: 800; background: linear-gradient(45deg, var(--lilas), #fad0c4); -webkit-background-clip: text; background-clip: text; color: transparent; margin-bottom: 10px; margin-top: 0; }
+        
+        .onyx-desc { font-size: 0.95rem; color: var(--text-main); line-height: 1.4; margin-bottom: 20px; font-weight: 600; }
+        .onyx-desc strong { color: var(--accent); display: block; margin-top: 5px; }
+
+        .form-group { text-align: left; margin-bottom: 12px; }
+        label { display: block; margin-bottom: 4px; font-weight: 700; color: var(--text-main); padding-left: 15px; font-size: 0.85rem; }
+        
+        input, select { 
+            width: 100%; padding: 10px 20px; border-radius: 30px; border: 2px solid #f0f0f0; 
+            outline: none; font-family: 'Nunito'; font-size: 0.95rem; box-sizing: border-box; 
+            transition: all 0.3s; background: rgba(255,255,255,0.8); color: var(--text-main);
         }
-        .btn-pay { background: #333; color: white; padding: 20px; border-radius: 50px; width: 100%; border: none; font-weight: 800; cursor: pointer; }
-        #dashboard { display: none; }
+        input:focus, select:focus { border-color: var(--lilas); transform: scale(1.01); }
+
+        .photo-label { text-align: center; font-size: 0.8rem; font-weight: 800; color: var(--lilas); margin-top: 15px; margin-bottom: 8px; text-transform: uppercase; letter-spacing: 1px; }
+        .photo-slots { display: flex; gap: 10px; justify-content: center; margin-bottom: 15px; }
+        .slot {
+            width: 65px; height: 65px; border: 2px dashed #ffafbd; border-radius: 15px;
+            display: flex; align-items: center; justify-content: center;
+            cursor: pointer; color: #ffafbd; font-size: 1.2rem; overflow: hidden;
+            background-size: cover; background-position: center; transition: 0.3s;
+            background-color: rgba(255, 255, 255, 0.5);
+        }
+        .slot:hover { border-color: var(--accent); transform: scale(1.05); }
+
+        #customAppInput { display: none; margin-top: 8px; border-color: var(--lilas); }
+
+        .btn-pay { 
+            background: linear-gradient(135deg, #ffafbd 0%, #ffc3a0 100%); color: white; 
+            padding: 16px 40px; border-radius: 50px; text-decoration: none; font-weight: 800; 
+            border: 4px solid #fff; transition: all 0.3s; cursor: pointer; display: inline-block; width: 100%; font-size: 1.1rem; margin-top: 5px; box-sizing: border-box;
+            box-shadow: 0 10px 20px rgba(255, 175, 189, 0.3); text-align: center;
+        }
+        .btn-pay:hover { transform: translateY(-3px); box-shadow: 0 15px 30px rgba(255, 175, 189, 0.5); }
+
+        .paypal-secure { margin-top: 12px; font-size: 0.7rem; color: #9e9e9e; font-weight: 700; display: flex; align-items: center; justify-content: center; gap: 4px; }
+        .pp-blue { color: #003087; }
+        .pp-light { color: #009cde; }
+
+        .soap-bubble { position: fixed; border-radius: 50%; background: rgba(255, 255, 255, 0.2); box-shadow: inset 0 0 20px rgba(255, 255, 255, 0.5); display: flex; align-items: center; justify-content: center; font-size: 0.85rem; font-weight: 800; color: #7a7a7a; backdrop-filter: blur(3px); border: 1px solid rgba(255,255,255,0.4); z-index: 10; text-align: center; }
+        .particle { position: fixed; pointer-events: none; z-index: 200; font-size: 1.5rem; opacity: 0; }
     </style>
 </head>
 <body>
-    <div class="cloud-card" id="setup">
-        <h1 style="font-weight:800;">Note Privée</h1>
-        <p style="font-size: 0.8rem; color: #d4af37; letter-spacing: 2px; text-transform: uppercase;">Configuration</p>
-        <input type="text" id="from" placeholder="Votre Prénom">
-        <input type="text" id="to" placeholder="Son Prénom">
-        <textarea id="msg" placeholder="Votre message secret..."></textarea>
-        <button class="btn-pay" id="btn-show" onclick="showPay()">Activer (2.00 CHF)</button>
-        <div id="paypal-container" style="display:none; margin-top:20px;"></div>
-    </div>
 
-    <div class="cloud-card" id="dashboard">
-        <span style="font-size:3rem;">✨</span>
-        <h2>C'est prêt</h2>
-        <p style="font-size: 0.9rem; color: #777;">Copiez et envoyez ce lien :</p>
-        <div id="link-res" style="background:#f9f9f9; padding:15px; border-radius:20px; font-size:0.7rem; word-break:break-all; margin-bottom:20px;"></div>
-        <button onclick="copy()" style="background:#d4af37; color:white; border:none; padding:15px; border-radius:20px; width:100%; font-weight:800;">Copier le lien</button>
+    <div class="config-cloud">
+        <h1>Configuration</h1>
+        
+        <p class="onyx-desc">
+            Devenez l'architecte d'un instant suspendu.<br>
+            <strong>Offrez-lui l'exclusivité d'une bulle Onyx.</strong>
+        </p>
+        
+        <div class="form-group">
+            <label>Votre Prénom</label>
+            <input type="text" id="prenomJean" placeholder="Ex: Jean">
+        </div>
+
+        <div class="form-group">
+            <label>Son Prénom</label>
+            <input type="text" id="prenomAna" placeholder="Ex: Ana">
+        </div>
+
+        <div class="form-group">
+            <label>Où avez-vous croisé son regard ?</label>
+            <select id="appSelector" onchange="checkCustomApp()">
+                <option value="Tinder">Sur Tinder</option>
+                <option value="Bumble">Sur Bumble</option>
+                <option value="Hinge">Sur Hinge</option>
+                <option value="Happn">Sur Happn</option>
+                <option value="Instagram">Sur Instagram</option>
+                <option value="Autre">Autre (Précisez...)</option>
+            </select>
+            <input type="text" id="customAppInput" placeholder="Nom du site ou lieu...">
+        </div>
+
+        <div class="photo-label">Ajoutez 3 souvenirs (Polaroids)</div>
+        <div class="photo-slots">
+            <input type="file" id="file1" accept="image/*" style="display:none" onchange="processImg(this, 'onyx_img1', 'preview1')">
+            <div id="preview1" onclick="document.getElementById('file1').click()" class="slot">+</div>
+            
+            <input type="file" id="file2" accept="image/*" style="display:none" onchange="processImg(this, 'onyx_img2', 'preview2')">
+            <div id="preview2" onclick="document.getElementById('file2').click()" class="slot">+</div>
+
+            <input type="file" id="file3" accept="image/*" style="display:none" onchange="processImg(this, 'onyx_img3', 'preview3')">
+            <div id="preview3" onclick="document.getElementById('file3').click()" class="slot">+</div>
+        </div>
+
+        <button class="btn-pay" id="payBtn">Activer cet instant (2.90 CHF)</button>
+
+        <div class="paypal-secure">
+            Paiement sécurisé par <span class="pp-blue">Pay</span><span class="pp-light">Pal</span>
+        </div>
     </div>
 
     <script>
-        function showPay() {
-            if(!document.getElementById('from').value || !document.getElementById('to').value) return alert("Prénoms requis");
-            document.getElementById('btn-show').style.display = 'none';
-            document.getElementById('paypal-container').style.display = 'block';
-        }
-        paypal.Buttons({
-            createOrder: function(data, actions) { return actions.order.create({ purchase_units: [{ amount: { value: '2.00', currency_code: 'CHF' } }] }); },
-            onApprove: function(data, actions) {
-                return actions.order.capture().then(function() {
-                    const s = encodeURIComponent(document.getElementById('from').value);
-                    const r = encodeURIComponent(document.getElementById('to').value);
-                    const m = encodeURIComponent(document.getElementById('msg').value);
-                    const url = window.location.href.replace('jean-config.html', 'ana-view.html') + `?from=${s}&to=${r}&msg=${m}`;
-                    document.getElementById('setup').style.display = 'none';
-                    document.getElementById('dashboard').style.display = 'block';
-                    document.getElementById('link-res').innerText = url;
-                });
+        // --- OPTIMISATION : COMPRESSION DES PHOTOS ---
+        function processImg(input, storageKey, previewId) {
+            if (input.files && input.files[0]) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const img = new Image();
+                    img.src = e.target.result;
+                    img.onload = function() {
+                        const canvas = document.createElement('canvas');
+                        const ctx = canvas.getContext('2d');
+                        const maxW = 400;
+                        const scale = maxW / img.width;
+                        canvas.width = maxW;
+                        canvas.height = img.height * scale;
+                        ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+                        const compressedData = canvas.toDataURL('image/jpeg', 0.6); // Compression un peu plus forte pour Firebase
+                        const slot = document.getElementById(previewId);
+                        slot.style.backgroundImage = `url(${compressedData})`;
+                        slot.style.borderStyle = "solid";
+                        slot.innerText = "";
+                        localStorage.setItem(storageKey, compressedData);
+                    };
+                };
+                reader.readAsDataURL(input.files[0]);
             }
-        }).render('#paypal-container');
-        function copy() { navigator.clipboard.writeText(document.getElementById('link-res').innerText); alert("Copié !"); }
+        }
+
+        function checkCustomApp() {
+            const selector = document.getElementById('appSelector');
+            const customInput = document.getElementById('customAppInput');
+            customInput.style.display = (selector.value === "Autre") ? "block" : "none";
+        }
+
+        document.getElementById('payBtn').addEventListener('click', function(e) {
+            const jean = document.getElementById('prenomJean').value;
+            const ana = document.getElementById('prenomAna').value;
+            if(!jean || !ana) { alert("Hop là ! Les prénoms sont obligatoires ✨"); return; }
+
+            const selector = document.getElementById('appSelector');
+            const customInput = document.getElementById('customAppInput');
+            const sourceFinale = (selector.value === "Autre") ? customInput.value : selector.value;
+            
+            const onyxData = {
+                jean: jean,
+                ana: ana,
+                origine: sourceFinale,
+                timestamp: Date.now(),
+                img1: localStorage.getItem('onyx_img1') || "",
+                img2: localStorage.getItem('onyx_img2') || "",
+                img3: localStorage.getItem('onyx_img3') || ""
+            };
+
+            // Sauvegarde Cloud avant redirection
+            window.saveToFirebase(onyxData).then(() => {
+                window.location.href = "paiement.html";
+            }).catch(err => {
+                alert("Erreur de connexion cloud. Vérifie ta base de données !");
+            });
+        });
+
+        // Animations d'ambiance
+        const apps = ['Tinder', 'Bumble', 'Meetic', 'Happn', 'Hinge'];
+        const icons = ['🌸', '✨', '🌺', '💫'];
+
+        function createFlower() {
+            const p = document.createElement('div');
+            p.className = 'particle';
+            p.innerText = icons[Math.floor(Math.random() * icons.length)];
+            p.style.left = Math.random() * 100 + 'vw'; p.style.top = '-50px';
+            document.body.appendChild(p);
+            p.animate([{ transform: 'translateY(0) rotate(0deg)', opacity: 0 }, { opacity: 0.6, offset: 0.2 }, { transform: `translateY(110vh) rotate(${Math.random() * 360}deg)`, opacity: 0 }], { duration: 10000 + Math.random() * 5000, easing: 'linear' }).onfinish = () => p.remove();
+        }
+
+        function spawnBubble() {
+            const b = document.createElement('div');
+            const size = 90 + Math.random() * 30;
+            b.className = 'soap-bubble';
+            b.style.width = size + 'px'; b.style.height = size + 'px';
+            b.style.left = Math.random() * 90 + '%'; b.style.bottom = '-150px';
+            b.innerText = apps[Math.floor(Math.random() * apps.length)];
+            document.body.appendChild(b);
+            b.animate([{ transform: 'translateY(0)' }, { transform: 'translateY(-130vh)' }], { duration: 18000 + Math.random() * 4000, easing: 'linear' }).onfinish = () => b.remove();
+        }
+
+        setInterval(createFlower, 1000);
+        setInterval(spawnBubble, 4500);
+        window.onload = () => { for(let i=0; i<3; i++) setTimeout(spawnBubble, i * 1500); };
     </script>
 </body>
 </html>
