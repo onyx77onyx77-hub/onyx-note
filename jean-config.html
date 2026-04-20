@@ -24,7 +24,7 @@
         const db = getDatabase(app);
 
         // On rend la fonction accessible au bouton
-        window.saveToFirebase = function(data) {
+        ow.saveToFirebase = function(data) {
             return set(ref(db, 'session/'), data);
         }
     </script>
@@ -195,11 +195,13 @@
                 img3: localStorage.getItem('onyx_img3') || ""
             };
 
-            // Sauvegarde Cloud avant redirection
-            window.saveToFirebase(onyxData).then(() => {
-                window.location.href = "paiement.html";
-            }).catch(err => {
-                alert("Erreur de connexion cloud. Vérifie ta base de données !");
+           // Sauvegarde Cloud avant redirection
+window.saveToFirebase(onyxData).then(() => {
+    // On saute l'étape paiement et on va direct à l'invitation
+    window.location.href = "ana-invitation.html";
+}).catch(err => {
+    alert("Erreur de connexion cloud. Vérifie ta base de données !");
+});
             });
         });
 
@@ -229,7 +231,7 @@
 
         setInterval(createFlower, 1000);
         setInterval(spawnBubble, 4500);
-        window.onload = () => { for(let i=0; i<3; i++) setTimeout(spawnBubble, i * 1500); };
+        ow.onload = () => { for(let i=0; i<3; i++) setTimeout(spawnBubble, i * 1500); };
     </script>
 </body>
 </html>
