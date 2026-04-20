@@ -23,8 +23,8 @@
         const app = initializeApp(firebaseConfig);
         const db = getDatabase(app);
 
-        // On rend la fonction accessible au bouton
-        ow.saveToFirebase = function(data) {
+        // Correction de la fonction de sauvegarde
+        window.saveToFirebase = function(data) {
             return set(ref(db, 'session/'), data);
         }
     </script>
@@ -82,10 +82,6 @@
         }
         .btn-pay:hover { transform: translateY(-3px); box-shadow: 0 15px 30px rgba(255, 175, 189, 0.5); }
 
-        .paypal-secure { margin-top: 12px; font-size: 0.7rem; color: #9e9e9e; font-weight: 700; display: flex; align-items: center; justify-content: center; gap: 4px; }
-        .pp-blue { color: #003087; }
-        .pp-light { color: #009cde; }
-
         .soap-bubble { position: fixed; border-radius: 50%; background: rgba(255, 255, 255, 0.2); box-shadow: inset 0 0 20px rgba(255, 255, 255, 0.5); display: flex; align-items: center; justify-content: center; font-size: 0.85rem; font-weight: 800; color: #7a7a7a; backdrop-filter: blur(3px); border: 1px solid rgba(255,255,255,0.4); z-index: 10; text-align: center; }
         .particle { position: fixed; pointer-events: none; z-index: 200; font-size: 1.5rem; opacity: 0; }
     </style>
@@ -136,14 +132,10 @@
         </div>
 
         <button class="btn-pay" id="payBtn">Activer cet instant (2.90 CHF)</button>
-
-        <div class="paypal-secure">
-            Paiement sécurisé par <span class="pp-blue">Pay</span><span class="pp-light">Pal</span>
-        </div>
     </div>
 
     <script>
-        // --- OPTIMISATION : COMPRESSION DES PHOTOS ---
+        // --- COMPRESSION DES PHOTOS ---
         function processImg(input, storageKey, previewId) {
             if (input.files && input.files[0]) {
                 const reader = new FileReader();
@@ -153,12 +145,12 @@
                     img.onload = function() {
                         const canvas = document.createElement('canvas');
                         const ctx = canvas.getContext('2d');
-                        const maxW = 400;
+                        const maxW = 400; 
                         const scale = maxW / img.width;
                         canvas.width = maxW;
                         canvas.height = img.height * scale;
                         ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-                        const compressedData = canvas.toDataURL('image/jpeg', 0.6); // Compression un peu plus forte pour Firebase
+                        const compressedData = canvas.toDataURL('image/jpeg', 0.5); 
                         const slot = document.getElementById(previewId);
                         slot.style.backgroundImage = `url(${compressedData})`;
                         slot.style.borderStyle = "solid";
@@ -176,10 +168,14 @@
             customInput.style.display = (selector.value === "Autre") ? "block" : "none";
         }
 
-        document.getElementById('payBtn').addEventListener('click', function(e) {
+        document.getElementById('payBtn').addEventListener('click', function() {
             const jean = document.getElementById('prenomJean').value;
             const ana = document.getElementById('prenomAna').value;
-            if(!jean || !ana) { alert("Hop là ! Les prénoms sont obligatoires ✨"); return; }
+            
+            if(!jean || !ana) { 
+                alert("Hop là ! Les prénoms sont obligatoires ✨"); 
+                return; 
+            }
 
             const selector = document.getElementById('appSelector');
             const customInput = document.getElementById('customAppInput');
@@ -195,13 +191,12 @@
                 img3: localStorage.getItem('onyx_img3') || ""
             };
 
-           // Sauvegarde Cloud avant redirection
-window.saveToFirebase(onyxData).then(() => {
-    // On saute l'étape paiement et on va direct à l'invitation
-    window.location.href = "ana-invitation.html";
-}).catch(err => {
-    alert("Erreur de connexion cloud. Vérifie ta base de données !");
-});
+            // Sauvegarde Cloud et redirection
+            window.saveToFirebase(onyxData).then(() => {
+                window.location.href = "ana-invitation.html";
+            }).catch(err => {
+                alert("Erreur Cloud. Réessaie avec des photos plus légères !");
+                console.error(err);
             });
         });
 
@@ -231,7 +226,10 @@ window.saveToFirebase(onyxData).then(() => {
 
         setInterval(createFlower, 1000);
         setInterval(spawnBubble, 4500);
-        ow.onload = () => { for(let i=0; i<3; i++) setTimeout(spawnBubble, i * 1500); };
+        window.onload = () => { 
+            localStorage.clear(); // Nettoie les anciennes photos au chargement
+            for(let i=0; i<3; i++) setTimeout(spawnBubble, i * 1500); 
+        };
     </script>
 </body>
 </html>
