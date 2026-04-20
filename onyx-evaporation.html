@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ONYX | Évaporation</title>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@300;600;800&display=swap" rel="stylesheet">
+    <style>
+        :root { --text-main: #5d4037; --accent: #d4af37; }
+        
+        body { 
+            margin: 0; padding: 0; font-family: 'Nunito', sans-serif;
+            background: #ffffff; height: 100vh;
+            display: flex; align-items: center; justify-content: center;
+            overflow: hidden; color: var(--text-main);
+        }
+
+        .container { text-align: center; max-width: 450px; padding: 30px; z-index: 10; position: relative; }
+        
+        .cloud-icon {
+            font-size: 6rem; margin-bottom: 20px; display: inline-block;
+            animation: evaporate 5s ease-out forwards;
+        }
+
+        @keyframes evaporate {
+            0% { transform: scale(1) translateY(0); opacity: 1; filter: blur(0); }
+            100% { transform: scale(3) translateY(-100px); opacity: 0; filter: blur(30px); }
+        }
+
+        .content { opacity: 0; animation: fadeIn 2s 2s forwards; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        h1 { font-weight: 800; letter-spacing: 1px; font-size: 1.8rem; margin-bottom: 15px; }
+        p { font-weight: 300; line-height: 1.6; color: #888; font-size: 1.1rem; }
+        
+        .status-badge {
+            margin-top: 40px; font-size: 0.75rem; font-weight: 800;
+            text-transform: uppercase; letter-spacing: 4px; color: var(--accent);
+            padding: 12px 25px; border: 2px solid #fcfcfc; border-radius: 50px;
+            display: inline-block; box-shadow: 0 10px 30px rgba(0,0,0,0.03);
+        }
+
+        /* Particules pour l'explosion globale */
+        .particle { 
+            position: fixed; pointer-events: none; z-index: 5; 
+            transform: translate(-50%, -50%); font-size: 1.8rem;
+            will-change: transform, opacity;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <div class="cloud-icon">☁️</div>
+        
+        <div class="content">
+            <h1>L'instant s'est envolé</h1>
+            <p>
+                Le profil de <strong>Jean & Ana</strong> ainsi que tous vos souvenirs partagés ont été intégralement nettoyés. <br>
+                Rien n'a été conservé. <br>
+                <strong>La discrétion est absolue.</strong>
+            </p>
+            <div class="status-badge" id="statusMsg">Nettoyage sécurisé terminé</div>
+        </div>
+    </div>
+
+    <script>
+        // --- FONCTION D'EXPLOSION SUR TOUTE LA PAGE ---
+        function createGlobalFirework() {
+            const icons = ['✨', '🌸', '💖', '💫', '💎', '☁️', '🧚', '🌟', '📸']; // Ajout de l'icône photo qui explose aussi
+            
+            for (let e = 0; e < 8; e++) { // Augmentation à 8 points d'explosion pour plus de spectacle
+                setTimeout(() => {
+                    const randomX = Math.random() * window.innerWidth;
+                    const randomY = Math.random() * window.innerHeight;
+                    
+                    for(let i=0; i<15; i++) {
+                        const p = document.createElement('div');
+                        p.className = 'particle';
+                        p.innerText = icons[Math.floor(Math.random()*icons.length)];
+                        p.style.left = randomX + 'px'; 
+                        p.style.top = randomY + 'px';
+                        document.body.appendChild(p);
+                        
+                        const angle = (i / 15) * Math.PI * 2;
+                        const dist = 100 + Math.random() * 180; 
+                        
+                        p.animate([
+                            { transform: 'translate(-50%, -50%) scale(0) rotate(0deg)', opacity: 0 },
+                            { transform: `translate(${-50 + Math.cos(angle)*dist}px, ${-50 + Math.sin(angle)*dist}px) scale(1.8) rotate(360deg)`, opacity: 1, offset: 0.4 },
+                            { transform: `translate(${-50 + Math.cos(angle)*dist*1.4}px, ${-50 + Math.sin(angle)*dist*1.4}px) scale(0) rotate(720deg)`, opacity: 0 }
+                        ], { 
+                            duration: 2000 + Math.random() * 1000, 
+                            easing: 'cubic-bezier(0.1, 0.8, 0.3, 1)' 
+                        }).onfinish = () => p.remove();
+                    }
+                }, e * 350); 
+            }
+        }
+
+        window.onload = () => {
+            // 1. DÉCLENCHEMENT DE LA CÉLÉBRATION GLOBALE
+            createGlobalFirework();
+
+            // 2. SUPPRESSION RADICALE DU PROFIL (Jean, Ana, Messages, Timer, Photos)
+            localStorage.clear();
+            console.log("ONYX : Nettoyage atomique des données (Noms, Messages, Photos) terminé.");
+
+            // 3. MISE À JOUR DU STATUT FINAL
+            setTimeout(() => {
+                const msg = document.getElementById('statusMsg');
+                msg.innerText = "CONFIDENTIALITÉ TOTALE : ACTIVÉE";
+                msg.style.background = "linear-gradient(135deg, #fff, #fff9f0)";
+            }, 2500);
+
+            // Sécurité : Impossible de revenir en arrière
+            if (window.history.replaceState) {
+                window.history.replaceState(null, null, window.location.href);
+            }
+        };
+    </script>
+</body>
+</html>
