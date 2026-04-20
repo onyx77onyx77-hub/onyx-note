@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Un petit nuage pour vous... ✨</title>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root { --accent: #d4af37; --text-main: #5d4037; --lilas: #e1bee7; }
+        body { margin: 0; padding: 0; font-family: 'Nunito', sans-serif; background: linear-gradient(135deg, #fdfbfb 0%, #ebedee 50%, #fce4ec 100%); min-height: 100vh; display: flex; align-items: center; justify-content: center; overflow: hidden; }
+        
+        .ana-cloud {
+            position: relative; background: rgba(255, 255, 255, 0.98);
+            padding: 40px 50px; z-index: 100; text-align: center;
+            width: 90%; max-width: 480px; border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+            box-shadow: 0 30px 60px rgba(0,0,0,0.05), inset 0 0 40px rgba(255,255,255,1);
+            border: 5px solid white; animation: cloudFloat 6s infinite ease-in-out;
+        }
+        .ana-cloud::before, .ana-cloud::after { content: ''; position: absolute; background: rgba(255, 255, 255, 0.98); border-radius: 50%; z-index: -1; }
+        .ana-cloud::before { width: 180px; height: 180px; top: -50px; left: 20px; }
+        .ana-cloud::after { width: 220px; height: 220px; bottom: -40px; right: 5px; }
+
+        @keyframes cloudFloat { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-15px); } }
+
+        .origin-tag { font-size: 0.7rem; color: #bbb; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 15px; padding: 4px 12px; border-radius: 20px; background: rgba(255,255,255,0.5); border: 1px dashed var(--lilas); display: inline-block; }
+        h1 { font-size: 2.3rem; font-weight: 800; background: linear-gradient(45deg, var(--lilas), #fad0c4); -webkit-background-clip: text; background-clip: text; color: transparent; margin: 0 0 10px 0; }
+        .instruction { font-size: 1.05rem; color: var(--text-main); margin-bottom: 25px; line-height: 1.5; font-weight: 600; }
+        
+        .input-code { 
+            width: 100%; padding: 15px; border-radius: 50px; border: 2px solid var(--lilas); 
+            text-align: center; font-size: 1.2rem; letter-spacing: 2px; font-weight: 800; 
+            color: var(--accent); margin-bottom: 20px; outline: none; 
+            background: rgba(255,255,255,0.8); box-sizing: border-box;
+            transition: 0.3s;
+        }
+        .input-code:focus { border-color: var(--accent); box-shadow: 0 0 15px rgba(212, 175, 55, 0.2); }
+
+        .btn-activate { background: linear-gradient(135deg, #ffafbd 0%, #ffc3a0 100%); color: white; padding: 15px 40px; border-radius: 50px; font-weight: 800; border: 4px solid #fff; cursor: pointer; width: 100%; box-shadow: 0 10px 20px rgba(255, 175, 189, 0.3); transition: 0.3s; }
+        .btn-activate:hover { transform: scale(1.02); }
+
+        .soap-bubble { position: fixed; border-radius: 50%; background: rgba(255, 255, 255, 0.3); box-shadow: inset 0 0 20px rgba(255, 255, 255, 0.6); display: flex; align-items: center; justify-content: center; font-size: 0.85rem; font-weight: 700; color: #5d4037; backdrop-filter: blur(2px); border: 1px solid rgba(255,255,255,0.4); z-index: 10; text-align: center; padding: 15px; cursor: pointer; }
+        .particle { position: fixed; pointer-events: none; z-index: 200; transform: translate(-50%, -50%); }
+    </style>
+</head>
+<body>
+
+    <div class="ana-cloud">
+        <div style="font-size: 3rem; margin-bottom: 10px;">💐</div>
+        <div class="origin-tag">✨ Origine : <span id="appSource">...</span></div>
+        <h1 id="displayInviteName">Bonjour</h1>
+        <p class="instruction" id="dynamicText">Chargement de votre secret...</p>
+        <input type="text" id="anaCode" class="input-code" placeholder="ONYX-XXXX" maxlength="10">
+        <button id="mainBtn" class="btn-activate" onclick="checkCode()">Découvrir mon Nuage</button>
+    </div>
+
+    <script>
+        // --- LOGIQUE DE RÉCUPÉRATION ---
+        // On simule ici la récupération depuis la "base de données" (localStorage pour le test)
+        // Mais en production, on ferait un fetch() avec le code entré.
+        
+        function loadContext() {
+            // Dans la version finale, ces données viendront du serveur via le code
+            const sessionData = JSON.parse(localStorage.getItem('onyx_final_config'));
+            
+            if (sessionData) {
+                document.getElementById('displayInviteName').innerText = "Bonjour " + sessionData.ana;
+                document.getElementById('appSource').innerText = sessionData.origine;
+                document.getElementById('dynamicText').innerText = sessionData.jean + " a créé un havre de douceur pour vous suite à votre rencontre. Entrez le code secret.";
+            } else {
+                // Valeurs par défaut si le lien est ouvert sans session active
+                document.getElementById('displayInviteName').innerText = "Bonjour";
+                document.getElementById('appSource').innerText = "Le Destin";
+                document.getElementById('dynamicText').innerText = "Quelqu'un a créé un havre de douceur pour vous. Entrez votre code secret.";
+            }
+        }
+
+        const iconsPop = ['🌸', '✨', '💖', '💫', '🤍', '🌺'];
+        const sweetMessages = ["Vous êtes belle", "Une perle rare", "Sublime", "Ton sourire...", "Élégante", "Magique"];
+
+        function popFirework(x, y, isFinal = false) {
+            const count = isFinal ? 40 : 12;
+            for(let i=0; i<count; i++) {
+                const p = document.createElement('div');
+                p.className = 'particle';
+                p.innerText = iconsPop[Math.floor(Math.random()*iconsPop.length)];
+                p.style.left = x + 'px'; p.style.top = y + 'px';
+                p.style.fontSize = (isFinal ? 20 + Math.random()*20 : 15 + Math.random()*10) + 'px';
+                document.body.appendChild(p);
+                const angle = (i / count) * Math.PI * 2;
+                const dist = isFinal ? 100 + Math.random() * 150 : 60 + Math.random() * 60;
+                p.animate([
+                    { transform: 'translate(-50%, -50%) scale(0)', opacity: 0 },
+                    { transform: 'translate(-50%, -50%) scale(1.2)', opacity: 1, offset: 0.2 },
+                    { transform: `translate(${-50 + Math.cos(angle)*dist}px, ${-50 + Math.sin(angle)*dist}px) scale(0)`, opacity: 0 }
+                ], { duration: isFinal ? 1500 : 800, easing: 'ease-out' }).onfinish = () => p.remove();
+            }
+        }
+
+        function checkCode() {
+            const input = document.getElementById('anaCode').value.toUpperCase().trim();
+            const sessionData = JSON.parse(localStorage.getItem('onyx_final_config'));
+            
+            // Le "Code Unique" est celui généré sur la page de Jean
+            // Pour le test, on accepte le code stocké ou le code générique 777
+            if(input === "777" || (sessionData && input.includes(sessionData.jean.toUpperCase()))) {
+                
+                localStorage.setItem('anaAccepted', 'true');
+                
+                const btn = document.getElementById('mainBtn');
+                const r = btn.getBoundingClientRect();
+                popFirework(r.left + r.width/2, r.top + r.height/2, true);
+                
+                const cloud = document.querySelector('.ana-cloud');
+                cloud.style.transition = "all 1.2s ease";
+                cloud.style.opacity = "0";
+                cloud.style.transform = "scale(0.9) translateY(-20px)";
+                
+                setTimeout(() => { window.location.href = "nuage-final.html"; }, 1200);
+            } else {
+                // Shake effect si code faux
+                document.querySelector('.ana-cloud').animate([
+                    { transform: 'translateX(-10px)' }, { transform: 'translateX(10px)' }, { transform: 'translateX(0)' }
+                ], { duration: 300 });
+            }
+        }
+
+        function spawnBubble() {
+            if (document.querySelectorAll('.soap-bubble').length >= 6) return;
+            const b = document.createElement('div');
+            b.className = 'soap-bubble';
+            const size = 110 + Math.random() * 30;
+            b.style.width = size + 'px'; b.style.height = size + 'px';
+            b.style.left = Math.random() * (window.innerWidth - size) + 'px';
+            b.style.top = Math.random() * (window.innerHeight - size) + 'px';
+            b.innerText = sweetMessages[Math.floor(Math.random() * sweetMessages.length)];
+            b.onclick = () => {
+                const r = b.getBoundingClientRect();
+                popFirework(r.left + r.width/2, r.top + r.height/2);
+                b.remove();
+            };
+            document.body.appendChild(b);
+            setTimeout(() => { if(b.parentNode) b.remove(); }, 10000);
+        }
+
+        window.onload = () => {
+            loadContext();
+            setInterval(spawnBubble, 2500);
+            for(let i=0; i<3; i++) setTimeout(spawnBubble, i * 800);
+        };
+    </script>
+</body>
+</html>
