@@ -24,7 +24,7 @@
         const db = getDatabase(app);
         let welcomeSent = false;
 
-        // Récupération des données locales pour identifier l'utilisateur
+        // Récupération des données locales
         const localData = JSON.parse(localStorage.getItem('onyx_data')) || { jean: "Jean", ana: "Ana" };
 
         onValue(ref(db, 'session/'), (snapshot) => {
@@ -33,8 +33,11 @@
                 document.getElementById('chatWith').innerText = `${data.jean} & ${data.ana}`;
                 displayPhotos(data);
                 initTimer(data.timestamp || Date.now());
+                
+                // MESSAGE DE BIENVENUE CHALEUREUX
                 if (!welcomeSent) {
-                    appendMessage(`Bienvenue dans votre nuage, ${data.ana}. ✨`, false);
+                    const texteBienvenue = `Bienvenue dans votre nuage, ${data.ana}. ✨\n\nCet espace est à vous. Un refuge de paix et de bienveillance où vos mots s'envoleront en toute discrétion. Profitez de cet instant, et laissez la douceur d'ONYX vous envelopper. 🌸`;
+                    appendMessage(texteBienvenue, false);
                     welcomeSent = true;
                 }
             }
@@ -43,7 +46,6 @@
         window.sendMessage = function() {
             const input = document.getElementById('userInput');
             if (input.value.trim() !== "") {
-                // On vérifie si c'est Jean qui écrit ou Ana
                 const userType = localStorage.getItem('isJean') === 'true' ? localData.jean : localData.ana;
                 push(ref(db, 'chat/'), { 
                     texte: input.value, 
@@ -56,7 +58,6 @@
 
         onChildAdded(ref(db, 'chat/'), (snap) => {
             const m = snap.val();
-            // Détermine si le message vient de l'utilisateur actuel pour la couleur
             const isMe = (localStorage.getItem('isJean') === 'true' && m.auteur === localData.jean) || 
                          (localStorage.getItem('isJean') !== 'true' && m.auteur === localData.ana);
             appendMessage(m.texte, isMe);
@@ -80,27 +81,23 @@
         }
 
         function initTimer(ts) {
-            const duration = 172800000; // 48 heures
+            const duration = 172800000; 
             setInterval(() => {
                 const rem = duration - (Date.now() - ts);
                 const h = Math.max(0, Math.floor(rem/3600000)), m = Math.max(0, Math.floor((rem%3600000)/60000));
                 document.getElementById('timer').innerText = `⏱ Expire dans ${h}h ${m}m`;
+                if (rem <= 0) window.location.href = "onyx-evaporation.html";
             }, 1000);
         }
     </script>
 
     <style>
-        body { 
-            margin: 0; padding: 0; font-family: 'Nunito', sans-serif; 
-            background: #f4f4f7; height: 100vh; overflow: hidden; 
-            display: flex; align-items: center; justify-content: center; 
-        }
+        body { margin: 0; padding: 0; font-family: 'Nunito', sans-serif; background: #f4f4f7; height: 100vh; overflow: hidden; display: flex; align-items: center; justify-content: center; }
 
         .cloud-container {
-            position: relative; width: 92%; max-width: 420px; height: 82vh;
+            position: relative; width: 92%; max-width: 420px; height: 85vh;
             filter: drop-shadow(0 20px 40px rgba(0,0,0,0.08));
-            z-index: 100;
-            display: flex; align-items: center; justify-content: center;
+            z-index: 100; display: flex; align-items: center; justify-content: center;
             animation: cloudFloat 6s infinite ease-in-out;
         }
 
@@ -112,48 +109,32 @@
         .cloud-bg::before { content: ''; position: absolute; background: white; border-radius: 50%; width: 160px; height: 160px; top: -40px; left: -30px; }
         .cloud-bg::after { content: ''; position: absolute; background: white; border-radius: 50%; width: 140px; height: 140px; bottom: 30px; right: -40px; }
 
-        .content {
-            width: 100%; height: 100%; display: flex; flex-direction: column;
-            padding: 50px 35px 70px; box-sizing: border-box; position: relative;
-        }
+        .content { width: 100%; height: 100%; display: flex; flex-direction: column; padding: 50px 35px 70px; box-sizing: border-box; position: relative; }
 
         @keyframes cloudFloat { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-12px); } }
 
-        .chat-header h2 { margin: 0; font-size: 1.1rem; color: #ffafbd; font-weight: 800; text-align: center; }
-        .timer-info { font-size: 0.65rem; color: #bbb; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; text-align: center; }
+        .chat-header { text-align: center; margin-bottom: 10px; }
+        .chat-header h2 { margin: 0; font-size: 1.1rem; color: #ffafbd; font-weight: 800; }
+        .timer-info { font-size: 0.65rem; color: #bbb; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; }
+        .instruction-bubbles { font-size: 0.7rem; color: #ffafbd; font-style: italic; margin-top: 4px; opacity: 0.8; }
 
         .messages-area { flex: 1; overflow-y: auto; padding: 15px 5px; display: flex; flex-direction: column; gap: 10px; scrollbar-width: none; }
         .messages-area::-webkit-scrollbar { display: none; }
 
-        .msg { 
-            max-width: 85%; padding: 10px 14px; border-radius: 18px; font-weight: 600; font-size: 0.82rem; 
-            animation: msgIn 0.3s ease-out forwards; word-wrap: break-word;
-        }
+        .msg { max-width: 85%; padding: 12px 16px; border-radius: 18px; font-weight: 600; font-size: 0.82rem; line-height: 1.4; animation: msgIn 0.3s ease-out forwards; word-wrap: break-word; white-space: pre-line; }
         @keyframes msgIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
         .is-me { align-self: flex-end; background: linear-gradient(135deg, #ffafbd, #ffc3a0); color: white; border-bottom-right-radius: 2px; }
         .is-not-me { align-self: flex-start; background: #f0f0f0; color: #5d4037; border-bottom-left-radius: 2px; }
 
         .photo-gallery { display: flex; gap: 8px; justify-content: center; padding: 10px 0; }
-        .pola { width: 50px; height: 50px; border: 3px solid white; border-bottom: 8px solid white; box-shadow: 0 4px 8px rgba(0,0,0,0.1); object-fit: cover; }
+        .pola { width: 55px; height: 55px; border: 3px solid white; border-bottom: 10px solid white; box-shadow: 0 4px 8px rgba(0,0,0,0.1); object-fit: cover; }
 
         .input-area { padding: 10px 5px; display: flex; gap: 8px; align-items: center; }
-        input { flex: 1; border: 1px solid #f0f0f0; padding: 12px 15px; border-radius: 25px; outline: none; font-family: 'Nunito'; background: #fafafa; font-size: 0.85rem; }
-        .btn { background: linear-gradient(135deg, #ffafbd, #ffc3a0); border: none; color: white; width: 40px; height: 40px; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 1.1rem; flex-shrink: 0; }
+        input { flex: 1; border: 1px solid #eee; padding: 12px 18px; border-radius: 25px; outline: none; font-family: 'Nunito'; background: #fdfdfd; font-size: 0.85rem; }
+        .btn { background: linear-gradient(135deg, #ffafbd, #ffc3a0); border: none; color: white; width: 42px; height: 42px; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 1.1rem; flex-shrink: 0; box-shadow: 0 4px 10px rgba(255, 175, 189, 0.3); }
 
-        .bubble { 
-            position: fixed; border-radius: 50%; background: rgba(255,255,255,0.7); 
-            z-index: 5; 
-            display: flex; align-items: center; justify-content: center; 
-            font-size: 0.65rem; font-weight: 800; color: #ffb3ba; border: 1px solid rgba(255,255,255,0.5);
-            animation: rise 16s linear infinite; cursor: pointer; text-align: center; padding: 8px;
-            box-shadow: inset 0 0 12px rgba(255,255,255,0.9);
-        }
-        @keyframes rise {
-            0% { transform: translateY(110vh) scale(0.8); opacity: 0; }
-            10% { opacity: 1; }
-            90% { opacity: 1; }
-            100% { transform: translateY(-20vh) scale(1.2); opacity: 0; }
-        }
+        .bubble { position: fixed; border-radius: 50%; background: rgba(255,255,255,0.7); z-index: 5; display: flex; align-items: center; justify-content: center; font-size: 0.65rem; font-weight: 800; color: #ffb3ba; border: 1px solid rgba(255,255,255,0.5); animation: rise 18s linear infinite; cursor: pointer; text-align: center; padding: 8px; box-shadow: inset 0 0 12px rgba(255,255,255,0.9); }
+        @keyframes rise { 0% { transform: translateY(110vh) scale(0.8); opacity: 0; } 10% { opacity: 1; } 90% { opacity: 1; } 100% { transform: translateY(-20vh) scale(1.2); opacity: 0; } }
         .sparkle { position: fixed; pointer-events: none; z-index: 200; font-size: 1.6rem; }
     </style>
 </head>
@@ -165,11 +146,12 @@
             <div class="chat-header">
                 <h2 id="chatWith">ONYX</h2>
                 <div class="timer-info" id="timer">Chargement...</div>
+                <div class="instruction-bubbles">Éclatez les bulles pour libérer la douceur...</div>
             </div>
             <div id="photoContainer" class="photo-gallery"></div>
             <div class="messages-area" id="messagesArea"></div>
             <div class="input-area">
-                <input type="text" id="userInput" placeholder="Message..." onkeypress="if(event.key==='Enter') sendMessage()">
+                <input type="text" id="userInput" placeholder="Écrivez ici..." onkeypress="if(event.key==='Enter') sendMessage()">
                 <button class="btn" onclick="sendMessage()">➔</button>
             </div>
         </div>
@@ -177,10 +159,10 @@
 
     <script>
         const words = ["Précieuse", "Courage", "Protégés", "Ensemble", "Oser", "Magie", "Sourire", "Confiance", "Douceur", "Écoute", "Sereine", "Lumière", "Unique", "Force", "Bienveillance"];
-        const icons = ['🌸', '✨', '💖', '💫', '🤍', '🌈', '💎', '🔥', '🎀'];
+        const icons = ['🌸', '✨', '💖', '💫', '🤍', '🌈', '💎', '🎀'];
 
         function firework(x, y) {
-            const count = 15;
+            const count = 12;
             for (let i = 0; i < count; i++) {
                 const s = document.createElement('div');
                 s.className = 'sparkle';
@@ -188,11 +170,11 @@
                 s.style.left = x + 'px'; s.style.top = y + 'px';
                 document.body.appendChild(s);
                 const angle = (i / count) * Math.PI * 2;
-                const velocity = 100 + Math.random() * 150;
+                const velocity = 80 + Math.random() * 120;
                 s.animate([
-                    { transform: 'translate(-50%, -50%) scale(1) rotate(0deg)', opacity: 1 },
-                    { transform: `translate(calc(-50% + ${Math.cos(angle)*velocity}px), calc(-50% + ${Math.sin(angle)*velocity}px)) scale(0) rotate(${Math.random()*360}deg)`, opacity: 0 }
-                ], { duration: 1200, easing: 'cubic-bezier(0.1, 0.5, 0.3, 1)' }).onfinish = () => s.remove();
+                    { transform: 'translate(-50%, -50%) scale(1)', opacity: 1 },
+                    { transform: `translate(calc(-50% + ${Math.cos(angle)*velocity}px), calc(-50% + ${Math.sin(angle)*velocity}px)) scale(0)`, opacity: 0 }
+                ], { duration: 1000, easing: 'ease-out' }).onfinish = () => s.remove();
             }
         }
 
@@ -200,24 +182,22 @@
             const b = document.createElement('div');
             b.className = 'bubble';
             b.innerText = words[Math.floor(Math.random()*words.length)];
-            const size = 70 + Math.random()*25;
+            const size = 75 + Math.random()*20;
             b.style.width = size+'px'; b.style.height = size+'px';
             const side = Math.random() > 0.5 ? (Math.random()*15) : (85 + Math.random()*10);
             b.style.left = side + '%';
-            
             if (isInit) {
                 b.style.top = (Math.random()*90) + '%';
                 b.style.animationDelay = (Math.random()*-15) + 's';
             } else {
-                b.style.bottom = "-120px";
+                b.style.bottom = "-100px";
             }
-
             document.body.appendChild(b);
             b.onclick = (e) => { firework(e.clientX, e.clientY); b.remove(); };
         }
 
-        for(let i=0; i<10; i++) setTimeout(() => createBubble(true), i*150);
-        setInterval(createBubble, 1500);
+        for(let i=0; i<8; i++) setTimeout(() => createBubble(true), i*200);
+        setInterval(createBubble, 2000);
     </script>
 </body>
 </html>
