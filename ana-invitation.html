@@ -49,25 +49,21 @@
         <div class="origin-tag">✨ Origine : <span id="appSource">...</span></div>
         <h1 id="displayInviteName">Bonjour</h1>
         <p class="instruction" id="dynamicText">Chargement de votre secret...</p>
-        <input type="text" id="anaCode" class="input-code" placeholder="ONYX-XXXX" maxlength="10">
+        <input type="text" id="anaCode" class="input-code" placeholder="CODE SECRET" maxlength="10">
         <button id="mainBtn" class="btn-activate" onclick="checkCode()">Découvrir mon Nuage</button>
     </div>
 
     <script>
-        // --- LOGIQUE DE RÉCUPÉRATION ---
-        // On simule ici la récupération depuis la "base de données" (localStorage pour le test)
-        // Mais en production, on ferait un fetch() avec le code entré.
-        
+        // --- RÉCUPÉRATION DES DONNÉES DE JEAN ---
         function loadContext() {
-            // Dans la version finale, ces données viendront du serveur via le code
-            const sessionData = JSON.parse(localStorage.getItem('onyx_final_config'));
+            // On récupère les données 'onyx_data' sauvegardées par Jean sur la page précédente
+            const sessionData = JSON.parse(localStorage.getItem('onyx_data'));
             
             if (sessionData) {
                 document.getElementById('displayInviteName').innerText = "Bonjour " + sessionData.ana;
-                document.getElementById('appSource').innerText = sessionData.origine;
-                document.getElementById('dynamicText').innerText = sessionData.jean + " a créé un havre de douceur pour vous suite à votre rencontre. Entrez le code secret.";
+                document.getElementById('appSource').innerText = sessionData.app;
+                document.getElementById('dynamicText').innerText = sessionData.jean + " a créé un havre de douceur pour vous. Entrez le code pour continuer.";
             } else {
-                // Valeurs par défaut si le lien est ouvert sans session active
                 document.getElementById('displayInviteName').innerText = "Bonjour";
                 document.getElementById('appSource').innerText = "Le Destin";
                 document.getElementById('dynamicText').innerText = "Quelqu'un a créé un havre de douceur pour vous. Entrez votre code secret.";
@@ -98,14 +94,10 @@
 
         function checkCode() {
             const input = document.getElementById('anaCode').value.toUpperCase().trim();
-            const sessionData = JSON.parse(localStorage.getItem('onyx_final_config'));
             
-            // Le "Code Unique" est celui généré sur la page de Jean
-            // Pour le test, on accepte le code stocké ou le code générique 777
-            if(input === "777" || (sessionData && input.includes(sessionData.jean.toUpperCase()))) {
-                
+            // On accepte "777" par défaut pour tes tests
+            if(input === "777") {
                 localStorage.setItem('anaAccepted', 'true');
-                
                 const btn = document.getElementById('mainBtn');
                 const r = btn.getBoundingClientRect();
                 popFirework(r.left + r.width/2, r.top + r.height/2, true);
@@ -117,7 +109,6 @@
                 
                 setTimeout(() => { window.location.href = "nuage-final.html"; }, 1200);
             } else {
-                // Shake effect si code faux
                 document.querySelector('.ana-cloud').animate([
                     { transform: 'translateX(-10px)' }, { transform: 'translateX(10px)' }, { transform: 'translateX(0)' }
                 ], { duration: 300 });
