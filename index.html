@@ -8,41 +8,23 @@
     <style>
         body { 
             background: linear-gradient(135deg, #fdfbfb 0%, #ebedee 50%, #fce4ec 100%); 
-            margin: 0; 
-            min-height: 100vh; 
-            font-family: 'Nunito', sans-serif; 
-            display: flex; 
-            justify-content: center; 
-            align-items: center; 
-            overflow: hidden;
+            margin: 0; min-height: 100vh; font-family: 'Nunito', sans-serif; 
+            display: flex; justify-content: center; align-items: center; overflow: hidden;
         }
 
-        /* Conteneur pour les feux d'artifice */
-        canvas { 
-            position: fixed; 
-            top: 0; 
-            left: 0; 
-            pointer-events: none; 
-            z-index: 1; 
-        }
+        /* Garde les feux d'artifice bien en fond */
+        canvas { position: fixed; top: 0; left: 0; pointer-events: none; z-index: 1; }
 
+        /* LE CADRAN MODE NUAGE (Ton design original) */
         .onyx-card { 
-            background: rgba(255, 255, 255, 0.98); 
-            width: 85%; 
-            max-width: 400px; 
-            border-radius: 70px; 
-            padding: 60px 40px; 
-            text-align: center; 
-            box-shadow: 0 40px 80px rgba(0,0,0,0.05); 
-            border: 8px solid white; 
-            position: relative; 
-            z-index: 10;
+            background: rgba(255, 255, 255, 0.98); width: 85%; max-width: 400px; 
+            border-radius: 70px; padding: 60px 40px; text-align: center; 
+            box-shadow: 0 40px 80px rgba(0,0,0,0.05); border: 8px solid white; 
+            position: relative; z-index: 10;
         }
 
         .icon-float { 
-            position: absolute; 
-            font-size: 1.5rem; 
-            opacity: 0.3; 
+            position: absolute; font-size: 1.5rem; opacity: 0.3; 
             animation: floatIcon 6s infinite ease-in-out; 
         }
 
@@ -51,48 +33,17 @@
             50% { transform: translateY(-20px) rotate(20deg); } 
         }
 
-        h1 { 
-            font-size: 2.2rem; 
-            font-weight: 800; 
-            letter-spacing: 3px; 
-            margin: 0; 
-            color: #000; 
-        }
+        h1 { font-size: 2.2rem; font-weight: 800; letter-spacing: 3px; margin: 0; color: #000; }
+        .tag { color: #d4af37; text-transform: uppercase; font-size: 0.8rem; letter-spacing: 4px; margin-bottom: 30px; display: block; }
 
-        .tag { 
-            color: #d4af37; 
-            text-transform: uppercase; 
-            font-size: 0.8rem; 
-            letter-spacing: 4px; 
-            margin-bottom: 30px; 
-            display: block; 
-        }
-
+        /* LE BOUTON (Correctement placé au-dessus) */
         .btn { 
-            background: #000; 
-            color: white; 
-            padding: 20px; 
-            border-radius: 50px; 
-            text-decoration: none; 
-            display: block; 
-            font-weight: 800; 
-            margin-top: 30px; 
-            transition: 0.3s; 
-            cursor: pointer;
-            border: none;
+            background: #000; color: white !important; padding: 20px; border-radius: 50px; 
+            text-decoration: none; display: block; font-weight: 800; margin-top: 30px; 
+            transition: 0.3s; cursor: pointer; border: none;
+            position: relative; z-index: 999; /* Assure le clic sur mobile */
         }
-
-        .btn:hover { 
-            transform: scale(1.05); 
-            background: #333; 
-            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
-        }
-
-        .btn { 
-    position: relative; 
-    z-index: 999; 
-    cursor: pointer;
-}
+        .btn:hover { transform: scale(1.05); background: #333; }
     </style>
 </head>
 <body>
@@ -108,19 +59,17 @@
         <span class="tag">L'Exception</span>
         <p style="color: #888; line-height: 1.6;">Offrez un espace éphémère et privilégié pour vos rencontres.</p>
         
-        <<a href="jean-config.html" onclick="window.location.href='jean-config.html'; return false;" class="btn">Commencer l'expérience</a>
+        <a href="jean-config.html" class="btn">Commencer l'expérience</a>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
-    
     <script>
-        // Lancement des feux d'artifice au chargement de la page
+        // LES FEUX D'ARTIFICE (Toujours présents à l'ouverture)
         window.onload = () => {
-            const duration = 4 * 1000; // Dure 4 secondes
+            const duration = 4 * 1000;
             const end = Date.now() + duration;
 
             (function frame() {
-                // Feux d'artifice venant de la gauche
                 confetti({
                     particleCount: 3,
                     angle: 60,
@@ -128,7 +77,6 @@
                     origin: { x: 0, y: 0.6 },
                     colors: ['#d4af37', '#e1bee7', '#ffffff']
                 });
-                // Feux d'artifice venant de la droite
                 confetti({
                     particleCount: 3,
                     angle: 120,
