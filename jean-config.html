@@ -29,10 +29,10 @@
         }
 
         .container { 
-            background: white; padding: 30px; border-radius: 30px;
+            background: white; padding: 30px; border-radius: 40px;
             box-shadow: 0 15px 35px rgba(0,0,0,0.05);
             width: 90%; max-width: 400px; z-index: 10; text-align: center;
-            position: relative;
+            position: relative; border: 4px solid white;
         }
 
         .lilas-icon { font-size: 3rem; margin-bottom: 10px; }
@@ -41,28 +41,28 @@
         .form-group { margin-bottom: 15px; text-align: left; }
         label { display: block; font-size: 0.8rem; font-weight: 700; color: #888; margin-bottom: 5px; margin-left: 10px; }
         input { 
-            width: 100%; padding: 12px 20px; border-radius: 25px; 
+            width: 100%; padding: 15px 20px; border-radius: 25px; 
             border: 1px solid #f0f0f0; outline: none; box-sizing: border-box;
-            background: #fafafa; font-family: 'Nunito';
+            background: #fafafa; font-family: 'Nunito'; font-weight: 600;
         }
+        input:focus { border-color: var(--lilas); background: white; }
 
         .btn-continue {
             background: linear-gradient(135deg, var(--lilas), #e0b0ff);
             color: white; border: none; padding: 15px 40px; border-radius: 30px;
             font-weight: 800; cursor: pointer; width: 100%; margin-top: 20px;
-            transition: transform 0.2s; font-size: 1rem;
+            transition: 0.3s; font-size: 1rem; box-shadow: 0 10px 20px rgba(200, 162, 200, 0.2);
         }
+        .btn-continue:hover { transform: scale(1.02); box-shadow: 0 12px 25px rgba(200, 162, 200, 0.4); }
 
-        /* PARTICULES D'AMOUR */
-        .love-particle {
-            position: fixed; pointer-events: none; z-index: 100; font-size: 1.5rem;
-        }
+        .love-particle { position: fixed; pointer-events: none; z-index: 100; font-size: 1.5rem; }
     </style>
 </head>
 <body>
 
     <div class="container" id="configBox">
-        <div class="lilas-icon">🪻</div> <h1>Préparez votre Nuage</h1>
+        <div class="lilas-icon">🪻</div> 
+        <h1>Préparez votre Nuage</h1>
         
         <div class="form-group">
             <label>VOTRE PRÉNOM</label>
@@ -73,8 +73,8 @@
             <input type="text" id="anaName" placeholder="Ana">
         </div>
         
-        <p style="font-size: 0.8rem; color: #aaa; font-style: italic;">
-            Comme un bouquet de lilas, vos souvenirs vont éclore...
+        <p style="font-size: 0.8rem; color: #aaa; font-style: italic; line-height: 1.4;">
+            "Comme un bouquet de lilas, vos souvenirs vont éclore..."
         </p>
 
         <button class="btn-continue" onclick="startAdventure(event)">Continuer l'aventure ➔</button>
@@ -100,7 +100,7 @@
         setInterval(createBubble, 2500);
         for(let i=0; i<5; i++) createBubble();
 
-        // --- FEUX D'ARTIFICE D'AMOUR ---
+        // --- PARTICULES D'AMOUR ---
         function fireLove(x, y) {
             const icons = ['💖', '✨', '🪻', '🌸', '🤍', '💫'];
             for (let i = 0; i < 20; i++) {
@@ -124,10 +124,9 @@
             const j = document.getElementById('jeanName').value || "Jean";
             const a = document.getElementById('anaName').value || "Ana";
             
-            // Lancement du feu d'artifice
             fireLove(e.clientX, e.clientY);
 
-            // Sauvegarde des données
+            // Sauvegarde CRUCIALE des prénoms
             const onyxData = {
                 jean: j,
                 ana: a,
@@ -136,10 +135,9 @@
             localStorage.setItem('onyx_data', JSON.stringify(onyxData));
             localStorage.setItem('isJean', 'true');
 
-            // Petit délai pour profiter de l'effet visuel avant de changer de page
             setTimeout(() => {
-                // Ici tu mettras le lien vers ta page suivante (ex: ana-invitation.html ou upload-photos.html)
-                window.location.href = "ana-invitation.html"; 
+                // Direction la page de paiement ou d'invitation directe
+                window.location.href = "onyx-invitation.html"; 
             }, 1200);
         }
     </script>
