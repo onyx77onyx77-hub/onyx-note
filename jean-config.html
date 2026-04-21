@@ -3,165 +3,145 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;700&display=swap" rel="stylesheet">
-    <title>Jean Configuration | ONYX</title>
+    <title>ONYX | Configuration</title>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;800&display=swap" rel="stylesheet">
     <style>
-        body {
-            font-family: 'Nunito', sans-serif;
-            background: linear-gradient(to bottom, #e1bee7, #d4af37);
-            margin: 0;
-            min-height: 100vh;
-            overflow-x: hidden;
+        :root { --accent: #ffafbd; --lilas: #C8A2C8; }
+        body { 
+            margin: 0; padding: 0; font-family: 'Nunito', sans-serif;
+            background: #fdfbfb; height: 100vh; overflow: hidden;
+            display: flex; align-items: center; justify-content: center;
         }
-        .cloud {
-            position: absolute;
-            animation: float 5s ease-in-out infinite;
-            z-index: 1;
-            opacity: 0.6;
+
+        /* BULLES DE SAVON EN ARRIÈRE-PLAN */
+        .bubble { 
+            position: fixed; border-radius: 50%; background: rgba(255,255,255,0.6); 
+            z-index: 1; border: 1px solid rgba(200,162,200,0.3);
+            animation: rise 15s linear infinite; cursor: pointer;
+            display: flex; align-items: center; justify-content: center;
+            box-shadow: inset 0 0 10px rgba(255,255,255,0.8);
         }
-        @keyframes float {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-20px); }
+        @keyframes rise {
+            0% { transform: translateY(110vh) scale(0.8); opacity: 0; }
+            10% { opacity: 1; }
+            90% { opacity: 1; }
+            100% { transform: translateY(-20vh) scale(1.2); opacity: 0; }
         }
-        .container {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            min-height: 100vh;
-            padding: 20px;
+
+        .container { 
+            background: white; padding: 30px; border-radius: 30px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.05);
+            width: 90%; max-width: 400px; z-index: 10; text-align: center;
             position: relative;
-            z-index: 10;
         }
-        .card {
-            background: rgba(255, 255, 255, 0.95);
-            padding: 30px;
-            border-radius: 20px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-            width: 100%;
-            max-width: 450px;
-            text-align: center;
+
+        .lilas-icon { font-size: 3rem; margin-bottom: 10px; }
+        h1 { color: var(--lilas); font-weight: 800; margin-bottom: 20px; font-size: 1.5rem; }
+
+        .form-group { margin-bottom: 15px; text-align: left; }
+        label { display: block; font-size: 0.8rem; font-weight: 700; color: #888; margin-bottom: 5px; margin-left: 10px; }
+        input { 
+            width: 100%; padding: 12px 20px; border-radius: 25px; 
+            border: 1px solid #f0f0f0; outline: none; box-sizing: border-box;
+            background: #fafafa; font-family: 'Nunito';
         }
-        h1 { color: #333; font-weight: 700; margin-bottom: 20px; }
-        input[type="text"], select {
-            width: 100%;
-            padding: 12px;
-            margin: 10px 0;
-            border: 1px solid #ddd;
-            border-radius: 10px;
-            font-family: 'Nunito', sans-serif;
+
+        .btn-continue {
+            background: linear-gradient(135deg, var(--lilas), #e0b0ff);
+            color: white; border: none; padding: 15px 40px; border-radius: 30px;
+            font-weight: 800; cursor: pointer; width: 100%; margin-top: 20px;
+            transition: transform 0.2s; font-size: 1rem;
         }
-        .upload-zone {
-            border: 2px dashed #d4af37;
-            padding: 15px;
-            text-align: center;
-            margin: 10px 0;
-            border-radius: 15px;
-            background: #fffafa;
-            transition: 0.3s;
-        }
-        .upload-zone:hover { background: #fdf5e6; }
-        .upload-zone p { margin: 5px 0; font-size: 0.9rem; color: #666; }
-        
-        button {
-            background: #000;
-            color: white;
-            border: none;
-            padding: 15px 30px;
-            border-radius: 50px;
-            cursor: pointer;
-            font-weight: 700;
-            width: 100%;
-            margin-top: 20px;
-            transition: 0.3s;
-        }
-        button:hover { transform: scale(1.02); background: #333; }
-        
-        .preview-img {
-            width: 100px;
-            height: 100px;
-            object-fit: cover;
-            border-radius: 10px;
-            margin-top: 10px;
-            display: none;
-            display: inline-block;
+
+        /* PARTICULES D'AMOUR */
+        .love-particle {
+            position: fixed; pointer-events: none; z-index: 100; font-size: 1.5rem;
         }
     </style>
 </head>
 <body>
-    <div class="cloud" style="top: 5%; left: 5%; width: 100px;">☁️</div>
-    <div class="cloud" style="top: 15%; right: 10%; width: 120px;">☁️</div>
 
-    <div class="container">
-        <div class="card">
-            <h1>Configuration Onyx</h1>
-            <form id="jeanConfigForm">
-                <input type="text" id="jeanName" placeholder="Ton Prénom (Jean)" required />
-                <input type="text" id="anaName" placeholder="Son Prénom (Ana)" required />
-                
-                <div class="upload-zone">
-                    <p>📸 Photo de ta rencontre</p>
-                    <input type="file" id="photo1" accept="image/*" required onchange="previewImage(this, 'p1')" />
-                    <img id="p1" class="preview-img" />
-                </div>
-
-                <div class="upload-zone">
-                    <p>📸 Photo souvenir</p>
-                    <input type="file" id="photo2" accept="image/*" onchange="previewImage(this, 'p2')" />
-                    <img id="p2" class="preview-img" />
-                </div>
-
-                <select id="appSelector" required>
-                    <option value="">Où vous êtes-vous rencontrés ?</option>
-                    <option value="Tinder">Tinder</option>
-                    <option value="Bumble">Bumble</option>
-                    <option value="Hinge">Hinge</option>
-                    <option value="Happn">Happn</option>
-                    <option value="Autre">Autre</option>
-                </select>
-
-                <button type="submit" id="submitBtn">Générer l'invitation</button>
-            </form>
+    <div class="container" id="configBox">
+        <div class="lilas-icon">🪻</div> <h1>Préparez votre Nuage</h1>
+        
+        <div class="form-group">
+            <label>VOTRE PRÉNOM</label>
+            <input type="text" id="jeanName" placeholder="Jean">
         </div>
+        <div class="form-group">
+            <label>SON PRÉNOM</label>
+            <input type="text" id="anaName" placeholder="Ana">
+        </div>
+        
+        <p style="font-size: 0.8rem; color: #aaa; font-style: italic;">
+            Comme un bouquet de lilas, vos souvenirs vont éclore...
+        </p>
+
+        <button class="btn-continue" onclick="startAdventure(event)">Continuer l'aventure ➔</button>
     </div>
 
     <script>
-        // Aperçu des images
-        function previewImage(input, id) {
-            const preview = document.getElementById(id);
-            if (input.files && input.files[0]) {
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    preview.src = e.target.result;
-                    preview.style.display = 'inline-block';
-                }
-                reader.readAsDataURL(input.files[0]);
+        // --- CRÉATION DES BULLES ---
+        const words = ["Amour", "Douceur", "Lilas", "Confiance", "Oser", "Magie"];
+        function createBubble() {
+            const b = document.createElement('div');
+            b.className = 'bubble';
+            b.innerText = words[Math.floor(Math.random()*words.length)];
+            b.style.color = "#C8A2C8";
+            b.style.fontSize = "0.7rem";
+            b.style.fontWeight = "800";
+            const size = 60 + Math.random()*30;
+            b.style.width = size+'px'; b.style.height = size+'px';
+            b.style.left = Math.random()*90 + '%';
+            b.style.bottom = "-100px";
+            document.body.appendChild(b);
+            setTimeout(() => b.remove(), 15000);
+        }
+        setInterval(createBubble, 2500);
+        for(let i=0; i<5; i++) createBubble();
+
+        // --- FEUX D'ARTIFICE D'AMOUR ---
+        function fireLove(x, y) {
+            const icons = ['💖', '✨', '🪻', '🌸', '🤍', '💫'];
+            for (let i = 0; i < 20; i++) {
+                const p = document.createElement('div');
+                p.className = 'love-particle';
+                p.innerText = icons[Math.floor(Math.random()*icons.length)];
+                p.style.left = x + 'px'; p.style.top = y + 'px';
+                document.body.appendChild(p);
+                
+                const angle = Math.random() * Math.PI * 2;
+                const velocity = 100 + Math.random() * 150;
+                
+                p.animate([
+                    { transform: 'translate(-50%, -50%) scale(0.5)', opacity: 1 },
+                    { transform: `translate(calc(-50% + ${Math.cos(angle)*velocity}px), calc(-50% + ${Math.sin(angle)*velocity}px)) scale(1.5)`, opacity: 0 }
+                ], { duration: 1500, easing: 'cubic-bezier(0.1, 0.8, 0.3, 1)' }).onfinish = () => p.remove();
             }
         }
 
-        // Gestion du formulaire
-        document.getElementById('jeanConfigForm').onsubmit = async function(event) {
-            event.preventDefault();
-            const btn = document.getElementById('submitBtn');
-            btn.innerText = "Création en cours...";
-            btn.disabled = true;
-
-            // Ici, on stocke les infos localement pour l'instant
-            // (Firebase sera branché ici dans l'étape finale)
-            const data = {
-                jean: document.getElementById('jeanName').value,
-                ana: document.getElementById('anaName').value,
-                app: document.getElementById('appSelector').value,
-                date: new Date().toLocaleDateString()
-            };
+        function startAdventure(e) {
+            const j = document.getElementById('jeanName').value || "Jean";
+            const a = document.getElementById('anaName').value || "Ana";
             
-            localStorage.setItem('onyx_data', JSON.stringify(data));
+            // Lancement du feu d'artifice
+            fireLove(e.clientX, e.clientY);
 
-            // Redirection vers l'invitation
+            // Sauvegarde des données
+            const onyxData = {
+                jean: j,
+                ana: a,
+                timestamp: Date.now()
+            };
+            localStorage.setItem('onyx_data', JSON.stringify(onyxData));
+            localStorage.setItem('isJean', 'true');
+
+            // Petit délai pour profiter de l'effet visuel avant de changer de page
             setTimeout(() => {
-                window.location.href = 'ana-invitation.html';
-            }, 1500);
-        };
+                // Ici tu mettras le lien vers ta page suivante (ex: ana-invitation.html ou upload-photos.html)
+                window.location.href = "ana-invitation.html"; 
+            }, 1200);
+        }
     </script>
 </body>
 </html>
