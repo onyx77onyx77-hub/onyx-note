@@ -38,9 +38,9 @@
             text-transform: uppercase; letter-spacing: 4px; color: var(--accent);
             padding: 12px 25px; border: 2px solid #fcfcfc; border-radius: 50px;
             display: inline-block; box-shadow: 0 10px 30px rgba(0,0,0,0.03);
+            transition: all 0.6s ease;
         }
 
-        /* Particules pour l'explosion globale */
         .particle { 
             position: fixed; pointer-events: none; z-index: 5; 
             transform: translate(-50%, -50%); font-size: 1.8rem;
@@ -56,7 +56,7 @@
         <div class="content">
             <h1>L'instant s'est envolé</h1>
             <p>
-                Le profil de <strong>Jean & Ana</strong> ainsi que tous vos souvenirs partagés ont été intégralement nettoyés. <br>
+                Le profil de <strong id="pairNames">Jean & Ana</strong> ainsi que tous vos souvenirs partagés ont été intégralement nettoyés. <br>
                 Rien n'a été conservé. <br>
                 <strong>La discrétion est absolue.</strong>
             </p>
@@ -65,11 +65,10 @@
     </div>
 
     <script>
-        // --- FONCTION D'EXPLOSION SUR TOUTE LA PAGE ---
         function createGlobalFirework() {
-            const icons = ['✨', '🌸', '💖', '💫', '💎', '☁️', '🧚', '🌟', '📸']; // Ajout de l'icône photo qui explose aussi
+            const icons = ['✨', '🌸', '💖', '💫', '💎', '☁️', '🧚', '🌟', '📸'];
             
-            for (let e = 0; e < 8; e++) { // Augmentation à 8 points d'explosion pour plus de spectacle
+            for (let e = 0; e < 8; e++) {
                 setTimeout(() => {
                     const randomX = Math.random() * window.innerWidth;
                     const randomY = Math.random() * window.innerHeight;
@@ -99,21 +98,30 @@
         }
 
         window.onload = () => {
-            // 1. DÉCLENCHEMENT DE LA CÉLÉBRATION GLOBALE
+            // 1. On récupère les prénoms une dernière fois avant de vider la mémoire
+            const sessionData = JSON.parse(localStorage.getItem('onyx_data'));
+            if (sessionData && sessionData.jean && sessionData.ana) {
+                document.getElementById('pairNames').innerText = sessionData.jean + " & " + sessionData.ana;
+            }
+
+            // 2. Lancement des feux d'artifice visuels
             createGlobalFirework();
 
-            // 2. SUPPRESSION RADICALE DU PROFIL (Jean, Ana, Messages, Timer, Photos)
-            localStorage.clear();
-            console.log("ONYX : Nettoyage atomique des données (Noms, Messages, Photos) terminé.");
+            // 3. Suppression RADICALE des données locales après 1 seconde
+            setTimeout(() => {
+                localStorage.clear();
+                console.log("ONYX : Confidentialité garantie. Données locales supprimées.");
+            }, 1000);
 
-            // 3. MISE À JOUR DU STATUT FINAL
+            // 4. Mise à jour finale du badge
             setTimeout(() => {
                 const msg = document.getElementById('statusMsg');
                 msg.innerText = "CONFIDENTIALITÉ TOTALE : ACTIVÉE";
                 msg.style.background = "linear-gradient(135deg, #fff, #fff9f0)";
+                msg.style.borderColor = "#d4af37";
             }, 2500);
 
-            // Sécurité : Impossible de revenir en arrière
+            // 5. Empêcher le bouton "retour" du navigateur
             if (window.history.replaceState) {
                 window.history.replaceState(null, null, window.location.href);
             }
