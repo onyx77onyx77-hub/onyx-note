@@ -126,7 +126,7 @@
             
             fireLove(e.clientX, e.clientY);
 
-            // Sauvegarde CRUCIALE des prénoms
+            // Sauvegarde des prénoms
             const onyxData = {
                 jean: j,
                 ana: a,
@@ -136,8 +136,8 @@
             localStorage.setItem('isJean', 'true');
 
             setTimeout(() => {
-                // Direction la page de paiement ou d'invitation directe
-                window.location.href = "onyx-invitation.html"; 
+                // MODIFICATION : Direction la transition magique pour le test
+                window.location.href = "onyx-transition.html"; 
             }, 1200);
         }
     </script>
