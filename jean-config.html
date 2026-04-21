@@ -1,20 +1,23 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="fr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@300&display=swap" rel="stylesheet">
-    <title>Jean Configuration</title>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;700&display=swap" rel="stylesheet">
+    <title>Jean Configuration | ONYX</title>
     <style>
         body {
             font-family: 'Nunito', sans-serif;
             background: linear-gradient(to bottom, #e1bee7, #d4af37);
-            overflow: hidden;
-            position: relative;
+            margin: 0;
+            min-height: 100vh;
+            overflow-x: hidden;
         }
         .cloud {
             position: absolute;
             animation: float 5s ease-in-out infinite;
+            z-index: 1;
+            opacity: 0.6;
         }
         @keyframes float {
             0%, 100% { transform: translateY(0); }
@@ -25,99 +28,139 @@
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            height: 100vh;
+            min-height: 100vh;
+            padding: 20px;
+            position: relative;
+            z-index: 10;
         }
         .card {
-            background: white;
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-            width: 90%;
-            max-width: 500px;
-        }
-        input[type="text"], input[type="file"], select {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
             width: 100%;
-            padding: 10px;
+            max-width: 450px;
+            text-align: center;
+        }
+        h1 { color: #333; font-weight: 700; margin-bottom: 20px; }
+        input[type="text"], select {
+            width: 100%;
+            padding: 12px;
             margin: 10px 0;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-        }
-        button {
-            background: #d4af37;
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 5px;
-            cursor: pointer;
-            transition: background 0.3s;
-        }
-        button:hover {
-            background: #c3a53e;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            font-family: 'Nunito', sans-serif;
         }
         .upload-zone {
-            border: 2px dashed #ccc;
-            padding: 20px;
+            border: 2px dashed #d4af37;
+            padding: 15px;
             text-align: center;
             margin: 10px 0;
+            border-radius: 15px;
+            background: #fffafa;
+            transition: 0.3s;
+        }
+        .upload-zone:hover { background: #fdf5e6; }
+        .upload-zone p { margin: 5px 0; font-size: 0.9rem; color: #666; }
+        
+        button {
+            background: #000;
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 50px;
+            cursor: pointer;
+            font-weight: 700;
+            width: 100%;
+            margin-top: 20px;
+            transition: 0.3s;
+        }
+        button:hover { transform: scale(1.02); background: #333; }
+        
+        .preview-img {
+            width: 100px;
+            height: 100px;
+            object-fit: cover;
+            border-radius: 10px;
+            margin-top: 10px;
+            display: none;
+            display: inline-block;
         }
     </style>
 </head>
 <body>
-    <div class="cloud" style="top: 10%; left: 10%;">
-        <img src="cloud.png" alt="cloud" />
-    </div>
-    <div class="cloud" style="top: 20%; right: 15%;">
-        <img src="cloud.png" alt="cloud" />
-    </div>
+    <div class="cloud" style="top: 5%; left: 5%; width: 100px;">☁️</div>
+    <div class="cloud" style="top: 15%; right: 10%; width: 120px;">☁️</div>
+
     <div class="container">
         <div class="card">
-            <h1>Jean Configuration</h1>
+            <h1>Configuration Onyx</h1>
             <form id="jeanConfigForm">
-                <input type="text" id="jeanName" placeholder="Jean's Name" required />
-                <input type="text" id="anaName" placeholder="Ana's Name" required />
-                <div class="upload-zone" id="uploadZone1">
-                    <p>Upload Photo 1</p>
-                    <input type="file" accept="image/*" onchange="previewImage(event, 'preview1')" />
-                    <img id="preview1" src="#" alt="Preview" style="display:none;" />
+                <input type="text" id="jeanName" placeholder="Ton Prénom (Jean)" required />
+                <input type="text" id="anaName" placeholder="Son Prénom (Ana)" required />
+                
+                <div class="upload-zone">
+                    <p>📸 Photo de ta rencontre</p>
+                    <input type="file" id="photo1" accept="image/*" required onchange="previewImage(this, 'p1')" />
+                    <img id="p1" class="preview-img" />
                 </div>
-                <div class="upload-zone" id="uploadZone2">
-                    <p>Upload Photo 2</p>
-                    <input type="file" accept="image/*" onchange="previewImage(event, 'preview2')" />
-                    <img id="preview2" src="#" alt="Preview" style="display:none;" />
+
+                <div class="upload-zone">
+                    <p>📸 Photo souvenir</p>
+                    <input type="file" id="photo2" accept="image/*" onchange="previewImage(this, 'p2')" />
+                    <img id="p2" class="preview-img" />
                 </div>
-                <div class="upload-zone" id="uploadZone3">
-                    <p>Upload Photo 3</p>
-                    <input type="file" accept="image/*" onchange="previewImage(event, 'preview3')" />
-                    <img id="preview3" src="#" alt="Preview" style="display:none;" />
-                </div>
+
                 <select id="appSelector" required>
-                    <option value="">Select App</option>
+                    <option value="">Où vous êtes-vous rencontrés ?</option>
                     <option value="Tinder">Tinder</option>
                     <option value="Bumble">Bumble</option>
-                    <option value="Meetic">Meetic</option>
-                    <option value="Happn">Happn</option>
                     <option value="Hinge">Hinge</option>
+                    <option value="Happn">Happn</option>
                     <option value="Autre">Autre</option>
                 </select>
-                <button type="submit">Submit</button>
+
+                <button type="submit" id="submitBtn">Générer l'invitation</button>
             </form>
         </div>
     </div>
+
     <script>
-        function previewImage(event, previewId) {
-            const file = event.target.files[0];
-            const reader = new FileReader();
-            reader.onload = function() {
-                document.getElementById(previewId).src = reader.result;
-                document.getElementById(previewId).style.display = 'block';
+        // Aperçu des images
+        function previewImage(input, id) {
+            const preview = document.getElementById(id);
+            if (input.files && input.files[0]) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    preview.src = e.target.result;
+                    preview.style.display = 'inline-block';
+                }
+                reader.readAsDataURL(input.files[0]);
             }
-            reader.readAsDataURL(file);
         }
-        document.getElementById('jeanConfigForm').onsubmit = function(event) {
+
+        // Gestion du formulaire
+        document.getElementById('jeanConfigForm').onsubmit = async function(event) {
             event.preventDefault();
-            // Handle photo compression and upload to Firebase
-            // Redirect to ana-invitation.html
-            window.location.href = 'ana-invitation.html';
+            const btn = document.getElementById('submitBtn');
+            btn.innerText = "Création en cours...";
+            btn.disabled = true;
+
+            // Ici, on stocke les infos localement pour l'instant
+            // (Firebase sera branché ici dans l'étape finale)
+            const data = {
+                jean: document.getElementById('jeanName').value,
+                ana: document.getElementById('anaName').value,
+                app: document.getElementById('appSelector').value,
+                date: new Date().toLocaleDateString()
+            };
+            
+            localStorage.setItem('onyx_data', JSON.stringify(data));
+
+            // Redirection vers l'invitation
+            setTimeout(() => {
+                window.location.href = 'ana-invitation.html';
+            }, 1500);
         };
     </script>
 </body>
