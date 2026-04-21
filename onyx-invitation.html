@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ONYX | Votre Invitation Officielle</title>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root { --accent: #d4af37; --text-main: #5d4037; --lilas: #C8A2C8; }
+        body { 
+            margin: 0; padding: 0; font-family: 'Nunito', sans-serif; 
+            background: linear-gradient(135deg, #fdfbfb 0%, #ebedee 50%, #fce4ec 100%); 
+            min-height: 100vh; display: flex; align-items: center; justify-content: center; 
+            overflow: hidden; 
+        }
+
+        /* BULLES EN ARRIÈRE-PLAN */
+        .bubble { 
+            position: fixed; border-radius: 50%; background: rgba(255,255,255,0.6); 
+            z-index: 1; border: 1px solid rgba(200,162,200,0.2);
+            animation: rise 18s linear infinite;
+        }
+        @keyframes rise {
+            0% { transform: translateY(110vh) scale(0.8); opacity: 0; }
+            10% { opacity: 1; }
+            100% { transform: translateY(-20vh) scale(1.2); opacity: 0; }
+        }
+        
+        .final-cloud {
+            position: relative; background: rgba(255, 255, 255, 0.98);
+            padding: 40px 50px; z-index: 100; text-align: center;
+            width: 90%; max-width: 500px; border-radius: 50px;
+            box-shadow: 0 40px 80px rgba(200, 162, 200, 0.15), inset 0 0 50px rgba(255,255,255,1);
+            border: 6px solid white; animation: cloudEntry 1s forwards ease-out;
+        }
+        
+        @keyframes cloudEntry { from { opacity: 0; transform: scale(0.9) translateY(20px); } to { opacity: 1; transform: scale(1) translateY(0); } }
+
+        h1 { font-size: 2rem; font-weight: 800; color: var(--lilas); margin-bottom: 5px; }
+        .instruction { font-size: 0.9rem; color: var(--text-main); margin-bottom: 20px; opacity: 0.8; }
+
+        .invite-box {
+            background: #fff; border: 2px dashed var(--lilas);
+            padding: 20px; border-radius: 20px; text-align: left;
+            margin-bottom: 25px; position: relative; cursor: pointer;
+            transition: 0.3s;
+        }
+        .invite-box:hover { border-color: var(--accent); background: #fffdf9; }
+        
+        .invite-text { font-size: 0.9rem; color: #666; line-height: 1.5; font-style: italic; }
+        .highlight-code { color: var(--accent); font-weight: 800; font-style: normal; letter-spacing: 1px; }
+
+        .copy-badge { 
+            display: inline-block; margin-top: 10px; font-size: 0.7rem; 
+            font-weight: 800; color: white; background: var(--lilas); 
+            padding: 6px 12px; border-radius: 10px; text-transform: uppercase;
+        }
+
+        .btn-enter { 
+            background: linear-gradient(135deg, #ffafbd 0%, #ffc3a0 100%); color: white; 
+            padding: 15px 40px; border-radius: 50px; text-decoration: none; font-weight: 800; font-size: 1.1rem;
+            border: 3px solid #fff; transition: all 0.3s; cursor: pointer; display: inline-block;
+            box-shadow: 0 10px 20px rgba(255, 175, 189, 0.3);
+        }
+        .btn-enter:hover { transform: translateY(-3px); box-shadow: 0 15px 25px rgba(255, 175, 189, 0.4); }
+
+        .particle { position: fixed; pointer-events: none; z-index: 200; font-size: 1.5rem; transform: translate(-50%, -50%); }
+    </style>
+</head>
+<body>
+
+    <script>
+        for(let i=0; i<6; i++) {
+            const b = document.createElement('div');
+            b.className = 'bubble';
+            const size = 40 + Math.random()*60;
+            b.style.width = size+'px'; b.style.height = size+'px';
+            b.style.left = Math.random()*100 + '%';
+            b.style.animationDelay = (Math.random()*10) + 's';
+            document.body.appendChild(b);
+        }
+    </script>
+
+    <div class="final-cloud">
+        <div style="font-size: 3rem; margin-bottom: 10px;">🪻</div>
+        <h1>L'Invitation</h1>
+        <p class="instruction">Cliquez sur le texte pour le copier et l'envoyer à Ana :</p>
+        
+        <div class="invite-box" id="copyArea" onclick="copyInvitation()">
+            <div class="invite-text">
+                "Quittons le chaos des applis... ✨ J'ai ouvert un nuage de tranquillité pour nous deux. ☁️ Entre ton code secret sur le site pour me rejoindre : <span class="highlight-code">ONYX-777</span>. 🫧"
+            </div>
+            <span class="copy-badge" id="copyLabel">Cliquer pour copier l'invitation 📋</span>
+        </div>
+
+        <button class="btn-enter" onclick="startExperience()">Entrer dans mon Nuage ✨</button>
+        
+        <p style="margin-top: 20px; font-size: 0.75rem; color: #aaa;">Accès sécurisé et éphémère (48h).</p>
+    </div>
+
+    <script>
+        function copyInvitation() {
+            const text = document.querySelector('.invite-text').innerText;
+            navigator.clipboard.writeText(text).then(() => {
+                const label = document.getElementById('copyLabel');
+                label.innerText = "Invitation copiée ! ✅";
+                label.style.background = "#2ecc71";
+                
+                const rect = document.getElementById('copyArea').getBoundingClientRect();
+                createBurst(rect.left + rect.width/2, rect.top + rect.height/2, 15);
+
+                setTimeout(() => {
+                    label.innerText = "Cliquer pour copier l'invitation 📋";
+                    label.style.background = "var(--lilas)";
+                }, 2500);
+            });
+        }
+
+        function startExperience() {
+            // On redirige vers le nuage final (le chat)
+            window.location.href = "nuage-final.html";
+        }
+
+        function createBurst(x, y, count) {
+            const icons = ['✨', '🪻', '🫧', '💖', '🤍'];
+            for (let i = 0; i < count; i++) {
+                const p = document.createElement('div');
+                p.className = 'particle';
+                p.innerText = icons[Math.floor(Math.random() * icons.length)];
+                p.style.left = x + 'px'; p.style.top = y + 'px';
+                document.body.appendChild(p);
+                const angle = Math.random() * Math.PI * 2;
+                const velocity = 80 + Math.random() * 80;
+                p.animate([
+                    { transform: 'translate(-50%, -50%) scale(1)', opacity: 1 },
+                    { transform: `translate(calc(-50% + ${Math.cos(angle) * velocity}px), calc(-50% + ${Math.sin(angle) * velocity}px)) scale(0)`, opacity: 0 }
+                ], { duration: 1500, easing: 'ease-out' }).onfinish = () => p.remove();
+            }
+        }
+    </script>
+</body>
+</html>
