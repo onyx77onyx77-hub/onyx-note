@@ -11,70 +11,121 @@
             margin: 0; min-height: 100vh; font-family: 'Nunito', sans-serif; 
             display: flex; justify-content: center; align-items: center; overflow: hidden;
         }
-
-        /* Feux d'artifice de bienvenue (en fond) */
-        canvas#welcomeFireworks { position: fixed; top: 0; left: 0; pointer-events: none; z-index: 1; }
+        canvas { position: fixed; top: 0; left: 0; pointer-events: none; z-index: 1; }
+        
+        /* BULLLES DE SAVON INTERACTIVES */
+        .bubble { 
+            position: fixed; border-radius: 50%; background: rgba(255,255,255,0.4); 
+            z-index: 5; border: 1px solid rgba(212, 175, 55, 0.2);
+            animation: rise 15s linear infinite; cursor: pointer;
+            box-shadow: inset 0 0 12px rgba(255,255,255,0.8);
+        }
+        @keyframes rise {
+            0% { transform: translateY(110vh) scale(0.8); opacity: 0; }
+            10% { opacity: 1; }
+            100% { transform: translateY(-20vh) scale(1.2); opacity: 0; }
+        }
 
         .onyx-card { 
             background: rgba(255, 255, 255, 0.98); width: 85%; max-width: 400px; 
-            border-radius: 70px; padding: 60px 40px; text-align: center; 
+            border-radius: 70px; padding: 50px 40px; text-align: center; 
             box-shadow: 0 40px 80px rgba(0,0,0,0.05); border: 8px solid white; 
             position: relative; z-index: 10;
         }
 
+        /* LOGO IMAGE (Ajusté selon ton image uploaded) */
+        .logo-box {
+            width: 100%;
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: center;
+        }
+        .logo-img {
+            width: 200px; /* Taille idéale pour ton logo nuage */
+            height: auto;
+            filter: drop-shadow(0 5px 15px rgba(0,0,0,0.05));
+        }
+        
         .icon-float { position: absolute; font-size: 1.5rem; opacity: 0.3; animation: floatIcon 6s infinite ease-in-out; }
         @keyframes floatIcon { 0%, 100% { transform: translateY(0) rotate(0deg); } 50% { transform: translateY(-20px) rotate(20deg); } }
-
-        h1 { font-size: 2.2rem; font-weight: 800; letter-spacing: 3px; margin: 0; color: #000; }
-        .tag { color: #d4af37; text-transform: uppercase; font-size: 0.8rem; letter-spacing: 4px; margin-bottom: 30px; display: block; }
-
-        /* Le Bouton */
+        
+        h1 { font-size: 2.2rem; font-weight: 800; letter-spacing: 3px; margin: 5px 0 0; color: #000; }
+        .tag { color: #d4af37; text-transform: uppercase; font-size: 0.8rem; letter-spacing: 4px; margin-bottom: 25px; display: block; }
+        
         .btn { 
-            background: #000; color: white !important; padding: 20px; border-radius: 50px; 
+            background: #000; color: white; padding: 20px; border-radius: 50px; 
             text-decoration: none; display: block; font-weight: 800; margin-top: 30px; 
             transition: 0.3s; cursor: pointer; border: none;
-            position: relative; z-index: 999;
         }
-        .btn:hover { transform: scale(1.05); background: #333; }
+        .btn:hover { transform: scale(1.05); background: #333; box-shadow: 0 10px 20px rgba(0,0,0,0.1); }
     </style>
 </head>
 <body>
-    <canvas id="welcomeFireworks"></canvas>
+    <canvas id="fireworks"></canvas>
 
     <div class="icon-float" style="top:10%; left:10%;">✨</div>
     <div class="icon-float" style="top:20%; right:15%; animation-delay: 1s;">☁️</div>
     <div class="icon-float" style="bottom:15%; left:20%; animation-delay: 2s;">💎</div>
     
     <div class="onyx-card">
-        <span style="font-size: 4rem;">☁️</span>
+        <div class="logo-box">
+            <img src="https://images-squarespace-com.ssl.fastly.net/content/v1/660a5e84f5093156942065e1/f8435d64-e1d8-4f51-b844-42f0a8d6b88d/logo+02+PNG.png" alt="ONYX Logo" class="logo-img">
+        </div>
+        
         <h1>ONYX</h1>
         <span class="tag">L'Exception</span>
-        <p style="color: #888; line-height: 1.6;">Offrez un espace éphémère et privilégié pour vos rencontres.</p>
+        <p style="color: #888; line-height: 1.6; font-size: 0.95rem;">Un espace éphémère et privilégié pour vos rencontres secrètes.</p>
         
-        <a href="jean-config.html" onclick="startAdventure(event)" class="btn">Commencer l'expérience</a>
+        <a href="jean-config.html" class="btn">Commencer l'expérience</a>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
     <script>
-        // 1. Les feux d'artifice de bienvenue
+        // LOGIQUE DES BULLES INTERACTIVES
+        function createBubble() {
+            const b = document.createElement('div');
+            b.className = 'bubble';
+            const size = 50 + Math.random() * 60;
+            b.style.width = size + 'px';
+            b.style.height = size + 'px';
+            b.style.left = Math.random() * 100 + '%';
+            b.style.bottom = "-100px";
+            
+            // Pop au clic/toucher avec confettis dorés
+            b.addEventListener('mousedown', (e) => {
+                confetti({
+                    particleCount: 20,
+                    spread: 70,
+                    origin: { x: e.clientX / window.innerWidth, y: e.clientY / window.innerHeight },
+                    colors: ['#d4af37', '#ffffff', '#fce4ec']
+                });
+                b.remove();
+            });
+            
+            document.body.appendChild(b);
+            setTimeout(() => { if(b.parentNode) b.remove(); }, 15000);
+        }
+        setInterval(createBubble, 2500);
+        for(let i=0; i<4; i++) createBubble();
+
+        // FEUX D'ARTIFICE AUTOMATIQUES DE BIENVENUE
         window.onload = () => {
-            const duration = 4 * 1000;
+            const duration = 3 * 1000;
             const end = Date.now() + duration;
-            const welcomeCanvas = document.getElementById('welcomeFireworks');
 
             (function frame() {
                 confetti({
                     particleCount: 3,
                     angle: 60,
                     spread: 55,
-                    origin: { x: 0, y: 0.6 },
+                    origin: { x: 0 },
                     colors: ['#d4af37', '#e1bee7', '#ffffff']
                 });
                 confetti({
                     particleCount: 3,
                     angle: 120,
                     spread: 55,
-                    origin: { x: 1, y: 0.6 },
+                    origin: { x: 1 },
                     colors: ['#d4af37', '#e1bee7', '#ffffff']
                 });
 
@@ -83,48 +134,6 @@
                 }
             }());
         };
-
-        // 2. L'explosion de confettis d'icônes (VISSUELL 2) au clic
-        function startAdventure(event) {
-            // Empêche la page de changer immédiatement
-            event.preventDefault(); 
-            const destination = event.target.href;
-
-            // Création des confettis d'icônes multicolores
-            // (Nous utilisons des formes personnalisées pour simuler des icônes)
-            const defaults = {
-              spread: 360,
-              ticks: 100,
-              gravity: 0.5,
-              decay: 0.94,
-              startVelocity: 30,
-              shapes: ['circle', 'square'], // Simule des formes d'icônes
-              colors: ['#FFD700', '#FF69B4', '#87CEEB', '#9370DB', '#32CD32'] // Couleurs vives (Gold, Pink, Blue, Purple, Green)
-            };
-
-            function shoot() {
-              confetti({
-                ...defaults,
-                particleCount: 80,
-                scalar: 1.5, // Taille des icônes
-              });
-
-              confetti({
-                ...defaults,
-                particleCount: 40,
-                scalar: 0.75, // Icônes plus petites pour le relief
-              });
-            }
-
-            // Déclenche l'explosion
-            shoot();
-
-            // Attend un court instant (1 seconde) pour laisser l'effet visuel se produire
-            // avant d'ouvrir la page suivante.
-            setTimeout(() => {
-                window.location.href = destination;
-            }, 1000); 
-        }
     </script>
 </body>
 </html>
