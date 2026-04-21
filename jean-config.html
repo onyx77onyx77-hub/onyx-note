@@ -1,103 +1,124 @@
-<script>
-        // --- COMPRESSION DES PHOTOS ---
-        function processImg(input, storageKey, previewId) {
-            if (input.files && input.files[0]) {
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    const img = new Image();
-                    img.src = e.target.result;
-                    img.onload = function() {
-                        const canvas = document.createElement('canvas');
-                        const ctx = canvas.getContext('2d');
-                        const maxW = 400; 
-                        const scale = maxW / img.width;
-                        canvas.width = maxW;
-                        canvas.height = img.height * scale;
-                        ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-                        const compressedData = canvas.toDataURL('image/jpeg', 0.5); 
-                        const slot = document.getElementById(previewId);
-                        slot.style.backgroundImage = `url(${compressedData})`;
-                        slot.style.borderStyle = "solid";
-                        slot.innerText = "";
-                        localStorage.setItem(storageKey, compressedData);
-                    };
-                };
-                reader.readAsDataURL(input.files[0]);
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@300&display=swap" rel="stylesheet">
+    <title>Jean Configuration</title>
+    <style>
+        body {
+            font-family: 'Nunito', sans-serif;
+            background: linear-gradient(to bottom, #e1bee7, #d4af37);
+            overflow: hidden;
+            position: relative;
+        }
+        .cloud {
+            position: absolute;
+            animation: float 5s ease-in-out infinite;
+        }
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-20px); }
+        }
+        .container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+        }
+        .card {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            width: 90%;
+            max-width: 500px;
+        }
+        input[type="text"], input[type="file"], select {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        button {
+            background: #d4af37;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        button:hover {
+            background: #c3a53e;
+        }
+        .upload-zone {
+            border: 2px dashed #ccc;
+            padding: 20px;
+            text-align: center;
+            margin: 10px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="cloud" style="top: 10%; left: 10%;">
+        <img src="cloud.png" alt="cloud" />
+    </div>
+    <div class="cloud" style="top: 20%; right: 15%;">
+        <img src="cloud.png" alt="cloud" />
+    </div>
+    <div class="container">
+        <div class="card">
+            <h1>Jean Configuration</h1>
+            <form id="jeanConfigForm">
+                <input type="text" id="jeanName" placeholder="Jean's Name" required />
+                <input type="text" id="anaName" placeholder="Ana's Name" required />
+                <div class="upload-zone" id="uploadZone1">
+                    <p>Upload Photo 1</p>
+                    <input type="file" accept="image/*" onchange="previewImage(event, 'preview1')" />
+                    <img id="preview1" src="#" alt="Preview" style="display:none;" />
+                </div>
+                <div class="upload-zone" id="uploadZone2">
+                    <p>Upload Photo 2</p>
+                    <input type="file" accept="image/*" onchange="previewImage(event, 'preview2')" />
+                    <img id="preview2" src="#" alt="Preview" style="display:none;" />
+                </div>
+                <div class="upload-zone" id="uploadZone3">
+                    <p>Upload Photo 3</p>
+                    <input type="file" accept="image/*" onchange="previewImage(event, 'preview3')" />
+                    <img id="preview3" src="#" alt="Preview" style="display:none;" />
+                </div>
+                <select id="appSelector" required>
+                    <option value="">Select App</option>
+                    <option value="Tinder">Tinder</option>
+                    <option value="Bumble">Bumble</option>
+                    <option value="Meetic">Meetic</option>
+                    <option value="Happn">Happn</option>
+                    <option value="Hinge">Hinge</option>
+                    <option value="Autre">Autre</option>
+                </select>
+                <button type="submit">Submit</button>
+            </form>
+        </div>
+    </div>
+    <script>
+        function previewImage(event, previewId) {
+            const file = event.target.files[0];
+            const reader = new FileReader();
+            reader.onload = function() {
+                document.getElementById(previewId).src = reader.result;
+                document.getElementById(previewId).style.display = 'block';
             }
+            reader.readAsDataURL(file);
         }
-
-        function checkCustomApp() {
-            const selector = document.getElementById('appSelector');
-            const customInput = document.getElementById('customAppInput');
-            customInput.style.display = (selector.value === "Autre") ? "block" : "none";
-        }
-
-        // --- GESTION DU CLIC ET REDIRECTION ---
-        document.getElementById('payBtn').addEventListener('click', function() {
-            const jean = document.getElementById('prenomJean').value;
-            const ana = document.getElementById('prenomAna').value;
-            
-            if(!jean || !ana) { 
-                alert("Hop là ! Les prénoms sont obligatoires ✨"); 
-                return; 
-            }
-
-            const selector = document.getElementById('appSelector');
-            const customInput = document.getElementById('customAppInput');
-            const sourceFinale = (selector.value === "Autre") ? customInput.value : selector.value;
-            
-            const onyxData = {
-                jean: jean,
-                ana: ana,
-                origine: sourceFinale,
-                timestamp: Date.now(),
-                img1: localStorage.getItem('onyx_img1') || "",
-                img2: localStorage.getItem('onyx_img2') || "",
-                img3: localStorage.getItem('onyx_img3') || ""
-            };
-
-            // Sauvegarde Cloud et redirection vers le fichier exact du Hub
-            if (window.saveToFirebase) {
-                window.saveToFirebase(onyxData).then(() => {
-                    // Suppression de l'erreur 404 : on pointe vers le fichier confirmé
-                    window.location.href = "ana-invitation.html";
-                }).catch(err => {
-                    alert("Erreur Cloud. Réessaie avec des photos plus légères (captures d'écran) !");
-                    console.error(err);
-                });
-            } else {
-                alert("Firebase n'est pas encore chargé. Patiente une seconde !");
-            }
-        });
-
-        // Animations d'ambiance
-        const apps = ['Tinder', 'Bumble', 'Meetic', 'Happn', 'Hinge'];
-        const icons = ['🌸', '✨', '🌺', '💫'];
-
-        function createFlower() {
-            const p = document.createElement('div');
-            p.className = 'particle';
-            p.innerText = icons[Math.floor(Math.random() * icons.length)];
-            p.style.left = Math.random() * 100 + 'vw'; p.style.top = '-50px';
-            document.body.appendChild(p);
-            p.animate([{ transform: 'translateY(0) rotate(0deg)', opacity: 0 }, { opacity: 0.6, offset: 0.2 }, { transform: `translateY(110vh) rotate(${Math.random() * 360}deg)`, opacity: 0 }], { duration: 10000 + Math.random() * 5000, easing: 'linear' }).onfinish = () => p.remove();
-        }
-
-        function spawnBubble() {
-            const b = document.createElement('div');
-            const size = 90 + Math.random() * 30;
-            b.className = 'soap-bubble';
-            b.style.width = size + 'px'; b.style.height = size + 'px';
-            b.style.left = Math.random() * 90 + '%'; b.style.bottom = '-150px';
-            b.innerText = apps[Math.floor(Math.random() * apps.length)];
-            document.body.appendChild(b);
-            b.animate([{ transform: 'translateY(0)' }, { transform: 'translateY(-130vh)' }], { duration: 18000 + Math.random() * 4000, easing: 'linear' }).onfinish = () => b.remove();
-        }
-
-        setInterval(createFlower, 1000);
-        setInterval(spawnBubble, 4500);
-        window.onload = () => { 
-            localStorage.clear(); 
-            for(let i=0; i<3; i++) setTimeout(spawnBubble, i * 1500); 
+        document.getElementById('jeanConfigForm').onsubmit = function(event) {
+            event.preventDefault();
+            // Handle photo compression and upload to Firebase
+            // Redirect to ana-invitation.html
+            window.location.href = 'ana-invitation.html';
         };
     </script>
+</body>
+</html>
